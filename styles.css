@@ -30,7 +30,7 @@ html, body {
 }
 
 #selector-consultorio select {
-    width: 66%; /* Ocupa todo el ancho del contenedor */
+    width: 72%; /* Ocupa todo el ancho del contenedor */
     background-color: #242424; /* Color de fondo oscuro */
     color: #ffffff; /* Color de texto claro */
     border: none; /* Elimina el borde */
@@ -38,7 +38,7 @@ html, body {
 }
 
 #calendario {
-    max-width: 414px; /* Anchura máxima igual a la de un iPhone XR */
+    max-width: 100%; /* Anchura máxima igual a la de un iPhone XR */
     height: 100%; /* Ajusta la altura al 100% de la ventana de visualización */
     max-height: 896px; /* Altura máxima igual a la de un iPhone XR */
     margin-bottom: 12px;
