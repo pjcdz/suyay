@@ -48,7 +48,7 @@ html, body {
     box-sizing: border-box; /* Incluye el padding y el borde en el ancho y la altura */
     display: flex;
     flex-direction: row; /* Los 'días' se mostrarán horizontalmente */
-    height: calc(100% / 14); /* Divide el alto total entre el número de horas */
+    height: calc(100% / 15); /* Divide el alto total entre el número de horas */
 }
 
 #calendario .dia, #calendario .tiempo {

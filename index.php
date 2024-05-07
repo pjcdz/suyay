@@ -1,10 +1,25 @@
+<?php
+require "config/database.php";
+function getIsOcupado($codHora) {
+    global $mysqli;
+    $query = "SELECT isOcupado FROM horasalquiladas WHERE codHora = $codHora";
+    $result = mysqli_query($mysqli, $query);
+    $row = mysqli_fetch_assoc($result);
+    return $row['isOcupado'];
+}
+
+$codHoras0809 = array(10809, 20809, 30809, 40809, 50809, 60809);
+$codHoras0910 = array(10910, 20910, 30910, 40910, 50910, 60910);
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Suyay</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
     <div id="contenedor-principal">
@@ -31,22 +46,22 @@
             </div>
             <div class="hora">
                 <div class="tiempo">8 - 9</div>
-                <div class="dia dia-false"></div>
-                <div class="dia"></div>
-                <div class="dia"></div>
-                <div class="dia"></div>
-                <div class="dia"></div>
-                <div class="dia"></div>
+                <?php
+                foreach ($codHoras0809 as $codHora) {
+                    $class = getIsOcupado($codHora) ? 'dia' : 'dia dia-false';
+                    echo "<div class=\"dia $class\"></div>";
+                }
+                ?>
             </div>
             <!-- Repite esto para cada hora hasta las 21:00 -->
             <div class="hora">
                 <div class="tiempo">9 - 10</div>
-                <div class="dia"></div>
-                <div class="dia"></div>
-                <div class="dia"></div>
-                <div class="dia"></div>
-                <div class="dia"></div>
-                <div class="dia"></div>
+                <?php
+                foreach ($codHoras0910 as $codHora) {
+                    $class = getIsOcupado($codHora) ? 'dia' : 'dia dia-false';
+                    echo "<div class=\"dia $class\"></div>";
+                }
+                ?>
             </div>
             <!-- ... -->
             <div class="hora">
@@ -91,6 +106,16 @@
             <!-- ... -->
             <div class="hora">
                 <div class="tiempo">14 - 15</div>
+                <div class="dia"></div>
+                <div class="dia"></div>
+                <div class="dia"></div>
+                <div class="dia"></div>
+                <div class="dia"></div>
+                <div class="dia"></div>
+            </div>
+            <!-- ... -->
+            <div class="hora">
+                <div class="tiempo">15 - 16</div>
                 <div class="dia"></div>
                 <div class="dia"></div>
                 <div class="dia"></div>
