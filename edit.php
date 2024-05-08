@@ -5,7 +5,6 @@ if(isset($_POST['update'])) {
     $dni = $_POST['dni'];
     $nombre = $_POST['name'];
     $credito = $_POST['credito'];
-    $deuda = $_POST['deuda'];
     $codHora = $_POST['codHora'];
     $codConsultorio = $_POST['codConsultorio'];
 
@@ -14,37 +13,31 @@ if(isset($_POST['update'])) {
         $credito = 0; 
     }
     
-    if( $credito > $deuda ) {
-        echo "<font color='red'>No se puede pagar mas de lo que se debe</font><br/>";
-    } else {    
-        // Determine if paid
-        if( $deuda != 0 ) {
-            $isPagado = $credito <= $deuda ? 0 : 1;
-        }
-
-        // Determine if occupied
-        $isOcupado = $dni == 0  || empty($dni) ? 0 : 1;
-
-        // Check if person already exists
-        $result = mysqli_query($mysqli, "SELECT * FROM personas WHERE dni='$dni'");
-        if(mysqli_num_rows($result) == 0) {
-            // If dni is not 0 and person does not exist, create a new entry in personas
-            if($dni != 0) {
-                $result = mysqli_query($mysqli, "INSERT INTO personas (dni, nombre, credito, deuda) VALUES ('$dni', '$nombre', '$credito', '$deuda')");
-            }
-        } if ($dni == 0 || empty($dni)) {
-            $result = mysqli_query($mysqli, "UPDATE personas SET nombre='', credito=0, deuda=0 WHERE dni='$dni'");
-        } else {
-            // If person exists, update the person
-            $result = mysqli_query($mysqli, "UPDATE personas SET nombre='$nombre', credito='$credito', deuda='$deuda' WHERE dni='$dni'");
-        } 
-
-        //updating the table
-        $result = mysqli_query($mysqli, "UPDATE horasalquiladas SET dni='$dni', isPagado='$isPagado', isOcupado='$isOcupado' WHERE codHora='$codHora' AND codConsultorio='$codConsultorio'");
-        
-        //redirectig to the display page. In our case, it is admin.php
-        header("Location: admin.php?codConsultorio=$codConsultorio");
+    // Determine if paid
+    if( $deuda != 0 ) {
+        $isPagado = $credito <= $deuda ? 0 : 1;
     }
+
+    // Determine if occupied
+    $isOcupado = $dni == 0  || empty($dni) ? 0 : 1;
+
+    // Check if person already exists
+    $result = mysqli_query($mysqli, "SELECT * FROM personas WHERE dni='$dni'");
+    if(mysqli_num_rows($result) == 0) {
+        // If dni is not 0 and person does not exist, create a new entry in personas
+        if($dni != 0) {
+            $result = mysqli_query($mysqli, "INSERT INTO personas (dni, nombre, credito, deuda) VALUES ('$dni', '$nombre', '$credito', '$deuda')");
+        }
+    } else {
+        // If person exists, update the person
+        $result = mysqli_query($mysqli, "UPDATE personas SET nombre='$nombre', credito='$credito', deuda='$deuda' WHERE dni='$dni'");
+    } 
+
+    //updating the table
+    $result = mysqli_query($mysqli, "UPDATE horasalquiladas SET dni='$dni', isPagado='$isPagado', isOcupado='$isOcupado' WHERE codHora='$codHora' AND codConsultorio='$codConsultorio'");
+    
+    //redirectig to the display page. In our case, it is admin.php
+    header("Location: admin.php?codConsultorio=$codConsultorio");
 }
 
 function getCodConsultorio() {
@@ -94,13 +87,27 @@ $rowHoras = mysqli_fetch_assoc($resultHoras);
 $descripcionHora = $rowHoras["descripcion"];
 
 
-$queryPersonas = "SELECT nombre, credito, deuda FROM personas WHERE dni = $dni";
+$queryPersonas = "SELECT nombre, credito FROM personas WHERE dni = $dni";
 $resultPersonas = mysqli_query($mysqli, $queryPersonas);
 $rowPersonas = mysqli_fetch_assoc($resultPersonas);
 
 $nombre = $rowPersonas["nombre"];
 $credito = $rowPersonas["credito"];
-$deuda = $rowPersonas["deuda"];
+// $deuda = $rowPersonas["deuda"];
+
+if ($dni == 0) {
+    // If dni is 0, set count and deuda to 0
+    $count = 0;
+    $deuda = 0;
+} else {
+    // Get the count of rows with the given dni in horasalquiladas
+    $result = mysqli_query($mysqli, "SELECT COUNT(*) as count FROM horasalquiladas WHERE dni='$dni'");
+    $row = mysqli_fetch_array($result);
+    $count = $row['count'];
+
+    // Set deuda to 1000 times the count
+    $deuda = $count * 1000;
+}
 
 ?>
 
