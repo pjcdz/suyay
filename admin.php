@@ -74,7 +74,7 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
                 <?php
                 foreach ($codHoras0809 as $codHora) {
                     $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
+                    echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"dia $class\"></a>";
                 }
                 ?>
             </div>
@@ -84,7 +84,7 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
                 <?php
                 foreach ($codHoras0910 as $codHora) {
                     $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
+                    echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"dia $class\"></a>";
                 }
                 ?>
             </div>
@@ -94,7 +94,7 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
                 <?php
                 foreach ($codHoras1011 as $codHora) {
                     $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
+                    echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"dia $class\"></a>";
                 }
                 ?>
             </div>
@@ -104,7 +104,7 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
                 <?php
                 foreach ($codHoras1112 as $codHora) {
                     $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
+                    echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"dia $class\"></a>";
                 }
                 ?>
             </div>
@@ -114,7 +114,7 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
                 <?php
                 foreach ($codHoras1213 as $codHora) {
                     $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
+                    echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"dia $class\"></a>";
                 }
                 ?>
             </div>
@@ -124,7 +124,7 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
                 <?php
                 foreach ($codHoras1314 as $codHora) {
                     $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
+                    echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"dia $class\"></a>";
                 }
                 ?>
             </div>
@@ -134,7 +134,7 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
                 <?php
                 foreach ($codHoras1415 as $codHora) {
                     $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
+                    echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"dia $class\"></a>";
                 }
                 ?>
             </div>
@@ -144,7 +144,7 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
                 <?php
                 foreach ($codHoras1516 as $codHora) {
                     $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
+                    echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"dia $class\"></a>";
                 }
                 ?>
             </div>
@@ -154,7 +154,7 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
                 <?php
                 foreach ($codHoras1617 as $codHora) {
                     $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
+                    echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"dia $class\"></a>";
                 }
                 ?>
             </div>
@@ -164,7 +164,7 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
                 <?php
                 foreach ($codHoras1718 as $codHora) {
                     $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
+                    echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"dia $class\"></a>";
                 }
                 ?>
             </div>
@@ -174,7 +174,7 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
                 <?php
                 foreach ($codHoras1819 as $codHora) {
                     $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
+                    echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"dia $class\"></a>";
                 }
                 ?>
             </div>
@@ -184,7 +184,7 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
                 <?php
                 foreach ($codHoras1920 as $codHora) {
                     $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
+                    echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"dia $class\"></a>";
                 }
                 ?>
             </div>
@@ -194,7 +194,7 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
                 <?php
                 foreach ($codHoras2021 as $codHora) {
                     $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
+                    echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"dia $class\"></a>";
                 }
                 ?>
             </div>
@@ -204,7 +204,7 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
                 <?php
                 foreach ($codHoras2122 as $codHora) {
                     $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
+                    echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"dia $class\"></a>";
                 }
                 ?>
             </div>

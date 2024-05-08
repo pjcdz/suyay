@@ -1,6 +1,52 @@
 <?php
 require "config/database.php";
 
+if(isset($_POST['update'])) {   
+    $dni = $_POST['dni'];
+    $nombre = $_POST['name'];
+    $credito = $_POST['credito'];
+    $deuda = $_POST['deuda'];
+    $codHora = $_POST['codHora'];
+    $codConsultorio = $_POST['codConsultorio'];
+
+    // checking empty fields
+    if ( empty($credito) ) {
+        $credito = 0; 
+    }
+    
+    if( $credito > $deuda ) {
+        echo "<font color='red'>No se puede pagar mas de lo que se debe</font><br/>";
+    } else {    
+        // Determine if paid
+        if( $deuda != 0 ) {
+            $isPagado = $credito <= $deuda ? 0 : 1;
+        }
+
+        // Determine if occupied
+        $isOcupado = $dni == 0  || empty($dni) ? 0 : 1;
+
+        // Check if person already exists
+        $result = mysqli_query($mysqli, "SELECT * FROM personas WHERE dni='$dni'");
+        if(mysqli_num_rows($result) == 0) {
+            // If dni is not 0 and person does not exist, create a new entry in personas
+            if($dni != 0) {
+                $result = mysqli_query($mysqli, "INSERT INTO personas (dni, nombre, credito, deuda) VALUES ('$dni', '$nombre', '$credito', '$deuda')");
+            }
+        } if ($dni == 0 || empty($dni)) {
+            $result = mysqli_query($mysqli, "UPDATE personas SET nombre='', credito=0, deuda=0 WHERE dni='$dni'");
+        } else {
+            // If person exists, update the person
+            $result = mysqli_query($mysqli, "UPDATE personas SET nombre='$nombre', credito='$credito', deuda='$deuda' WHERE dni='$dni'");
+        } 
+
+        //updating the table
+        $result = mysqli_query($mysqli, "UPDATE horasalquiladas SET dni='$dni', isPagado='$isPagado', isOcupado='$isOcupado' WHERE codHora='$codHora' AND codConsultorio='$codConsultorio'");
+        
+        //redirectig to the display page. In our case, it is admin.php
+        header("Location: admin.php?codConsultorio=$codConsultorio");
+    }
+}
+
 function getCodConsultorio() {
     if(empty($_GET["codConsultorio"])){
         $value = 1;
@@ -12,39 +58,49 @@ function getCodConsultorio() {
 
 $codConsultorio = getCodConsultorio();
 
-// function getCodHora() {
-//     if(empty($_GET["codHora"])){
-//         $value = 0809;
-//     } else {
-//         $value = $_GET['codHora'];
-//     } 
-//     return $value;
-// }
-
-// $codHora = getCodHora();
-
-function getIsOcupado($codHora, $codConsultorio) {
-    global $mysqli;
-    $query = "SELECT isOcupado FROM horasalquiladas WHERE codHora = $codHora AND codConsultorio = $codConsultorio";
-    $result = mysqli_query($mysqli, $query);
-    $row = mysqli_fetch_assoc($result);
-    return $row['isOcupado'];
+function getCodHora() {
+    $codConsultorio = getCodConsultorio();
+    if(empty($_GET["codHora"])){
+        header("Location: admin.php?codConsultorio=$codConsultorio");
+        exit;
+    } else {
+        $value = $_GET['codHora'];
+    } 
+    return $value;
 }
 
-$codHoras0809 = array(10809, 20809, 30809, 40809, 50809, 60809);
-$codHoras0910 = array(10910, 20910, 30910, 40910, 50910, 60910);
-$codHoras1011 = array(11011, 21011, 31011, 41011, 51011, 61011);
-$codHoras1112 = array(11112, 21112, 31112, 41112, 51112, 61112);
-$codHoras1213 = array(11213, 21213, 31213, 41213, 51213, 61213);
-$codHoras1314 = array(11314, 21314, 31314, 41314, 51314, 61314);
-$codHoras1415 = array(11415, 21415, 31415, 41415, 51415, 61415);
-$codHoras1516 = array(11516, 21516, 31516, 41516, 51516, 61516);
-$codHoras1617 = array(11617, 21617, 31617, 41617, 51617, 61617);
-$codHoras1718 = array(11718, 21718, 31718, 41718, 51718, 61718);
-$codHoras1819 = array(11819, 21819, 31819, 41819, 51819, 61819);
-$codHoras1920 = array(11920, 21920, 31920, 41920, 51920, 61920);
-$codHoras2021 = array(12021, 22021, 32021, 42021, 52021, 62021);
-$codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
+$codHora = getCodHora();
+
+$queryHorasAlquiladas = "SELECT dni, isOcupado, isPagado FROM horasalquiladas WHERE codHora = $codHora AND codConsultorio = $codConsultorio";
+$resultHorasAlquiladas = mysqli_query($mysqli, $queryHorasAlquiladas);
+$rowHorasAlquiladas = mysqli_fetch_assoc($resultHorasAlquiladas);
+
+$dni = $rowHorasAlquiladas["dni"];
+$isOcupado = $rowHorasAlquiladas["isOcupado"];
+$isPagado = $rowHorasAlquiladas["isPagado"];
+
+
+$queryConsultorios = "SELECT descripcion FROM consultorios WHERE codConsultorio = $codConsultorio";
+$resultConsultorios = mysqli_query($mysqli, $queryConsultorios);
+$rowConsultorios = mysqli_fetch_assoc($resultConsultorios);
+
+$descripcionConsultorio = $rowConsultorios["descripcion"];
+
+
+$queryHoras = "SELECT descripcion FROM horas WHERE codHora = $codHora";
+$resultHoras = mysqli_query($mysqli, $queryHoras);
+$rowHoras = mysqli_fetch_assoc($resultHoras);
+
+$descripcionHora = $rowHoras["descripcion"];
+
+
+$queryPersonas = "SELECT nombre, credito, deuda FROM personas WHERE dni = $dni";
+$resultPersonas = mysqli_query($mysqli, $queryPersonas);
+$rowPersonas = mysqli_fetch_assoc($resultPersonas);
+
+$nombre = $rowPersonas["nombre"];
+$credito = $rowPersonas["credito"];
+$deuda = $rowPersonas["deuda"];
 
 ?>
 
@@ -62,24 +118,26 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
         <div class="edit-modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>Consultorio 1</h2>
-                    <h2>Miercoles 11 - 12</h2>
+                    <h2><?php echo $descripcionConsultorio; ?></h2>
+                    <h2><?php echo $descripcionHora; ?></h2>
                 </div>
                 <div class="modal-body">
-                    <form name="form1" method="post" action="add.php">
-                        <label for="precio">DNI</label>
-                        <input type="text" name="precio" value="45178142" onkeypress="isInputNumber(event)">
+                    <form name="form1" method="post" action="edit.php">
+                        <label for="dni">DNI</label>
+                        <input type="text" name="dni" value="<?php echo $dni; ?>" onkeypress="isInputNumber(event)">
                         <label for="name">Nombre</label>
-                        <input type="text" name="name" value="Pablo Cardozo">
-                        <label for="precio">Monto pagado</label>
-                        <input type="text" name="precio" value="1000" onkeypress="isInputNumber(event)">
-                        <label for="precio">Monto a pagar mensualmente</label>
-                        <input type="text" name="precio" value="1000" readonly>
+                        <input type="text" name="name" value="<?php echo $nombre; ?>">
+                        <label for="credito">Monto pagado</label>
+                        <input type="text" name="credito" value="<?php echo $credito; ?>" onkeypress="isInputNumber(event)">
+                        <label for="deuda">Monto a pagar mensualmente</label>
+                        <input type="text" name="deuda" value="<?php echo $deuda; ?>" readonly>
+                        <input type="hidden" name="codHora" value="<?php echo $codHora; ?>">
+                        <input type="hidden" name="codConsultorio" value="<?php echo $codConsultorio; ?>">
                         <div class="modal-footer">
-                            <a href="admin.php">
+                            <a href="admin.php?codConsultorio=<?php echo $codConsultorio; ?>">
                                 <div id="cancelar">CANCELAR</div>
                             </a>
-                            <input type="submit" id="guardar" name="Submit" value="GUARDAR">
+                            <input type="submit" id="guardar" name="update" value="GUARDAR">
                         </div>
                     </form>
                 </div>
