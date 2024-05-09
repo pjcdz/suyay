@@ -16,6 +16,11 @@ if(isset($_POST['update'])) {
 
     $originalDni = $rowHorasAlquiladas["dni"];
 
+    // If the DNI has changed, reduce the debt of the original person by 1000
+    if($originalDni != $dni && $originalDni != 0 && !empty($originalDni)) {
+        $result = mysqli_query($mysqli, "UPDATE personas SET deuda = deuda - 1000 WHERE dni='$originalDni'");
+    }
+
     // checking empty fields
     if ( empty($credito) ) {
         $credito = 0; 
@@ -35,25 +40,20 @@ if(isset($_POST['update'])) {
         // If dni is not 0 and person does not exist, create a new entry in personas
         if( $dni != 0 || !empty($dni) ) { 
             $result = mysqli_query($mysqli, "INSERT INTO personas (dni, nombre, credito, deuda) VALUES ('$dni', '$nombre', '$credito', '$deuda')");
-            $result = mysqli_query($mysqli, "UPDATE personas SET deuda = deuda + 1000 WHERE dni='$dni'"); //FUNCIONANDO
+            $result = mysqli_query($mysqli, "UPDATE personas SET deuda = deuda + 1000 WHERE dni='$dni'");
         }
     } else {
         // If person exists, update the person 
-        if( $dni == 0 || empty($dni) ) { // new entry en horasAlquiladas usando un dni existente, luego en la misma entry borrar el dni y que vuelva a 0
-            $result = mysqli_query($mysqli, "UPDATE personas SET nombre='', credito='0', deuda='0' WHERE dni='$dni'"); //FUNCIONANDO
-        } elseif ( $originalDni =! $dni && $dni != 0 || !empty($dni) ) {
-            $result = mysqli_query($mysqli, "UPDATE personas SET deuda = deuda + 1000 WHERE dni='$dni'"); //FUNCIONANDO
-        } elseif ( $originalDni != 0 || !empty($originalDni) ) { // new entry en horasAlquiladas usando un dni existente con $originalDni != 0
-            $result = mysqli_query($mysqli, "UPDATE personas SET nombre='$nombre', credito='$credito', deuda='$deuda' WHERE dni='$dni'"); //FUNCIONANDO
+        if( $dni == 0 || empty($dni) ) { 
+            $result = mysqli_query($mysqli, "UPDATE personas SET nombre='', credito='0', deuda='0' WHERE dni='$dni'");
+        } elseif ( $originalDni != $dni && $dni != 0 && !empty($dni) ) {
+            $result = mysqli_query($mysqli, "UPDATE personas SET deuda = deuda + 1000 WHERE dni='$dni'");
+        } elseif ( $originalDni != 0 && !empty($originalDni) ) {
+            $result = mysqli_query($mysqli, "UPDATE personas SET nombre='$nombre', credito='$credito', deuda='$deuda' WHERE dni='$dni'");
         }
-
-        // If the DNI has changed and original DNI is not 0, reduce the debt of the original person by 1000
-        if($originalDni != $dni && $originalDni != 0 || !empty($originalDni)) { // ERROR: cree 123, cambio 123 -> 1234, deuda 123 SIGUE 1000 y 1234 aumento
-            $result = mysqli_query($mysqli, "UPDATE personas SET deuda = deuda - 1000 WHERE dni='$originalDni'");
-        } // FUNCIONA 50%, Cuando paso 0->123->0 funciona perfecto, pero 0->123->1234 no reduce el valor de $deuda
     } 
 
-    //updating the table, new entry en horasAlquiladas: puede usar un dni existente y puede ser $originalDni != 0
+    //updating the table
     $result = mysqli_query($mysqli, "UPDATE horasalquiladas SET dni='$dni', isPagado='$isPagado', isOcupado='$isOcupado' WHERE codHora='$codHora' AND codConsultorio='$codConsultorio'");
     
     //redirectig to the display page. In our case, it is admin.php
