@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 08, 2024 at 06:28 AM
+-- Generation Time: May 09, 2024 at 07:32 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -183,8 +183,8 @@ CREATE TABLE `horasalquiladas` (
 --
 
 INSERT INTO `horasalquiladas` (`codConsultorio`, `codHora`, `dni`, `isOcupado`, `isPagado`) VALUES
-(1, 10809, 0, 0, 0),
-(1, 10910, 0, 0, 0),
+(1, 10809, 123, 1, 0),
+(1, 10910, 1234, 1, 0),
 (1, 11011, 0, 0, 0),
 (1, 11112, 0, 0, 0),
 (1, 11213, 0, 0, 0),
@@ -707,7 +707,9 @@ CREATE TABLE `personas` (
 
 INSERT INTO `personas` (`dni`, `nombre`, `credito`, `deuda`) VALUES
 (0, '', 0, 0),
-(45178142, 'Pablo Cardozo', 0, 0);
+(123, '', 0, 1000),
+(1234, '', 0, 1000),
+(45178142, 'Pablo Cardozo', 1000, 0);
 
 --
 -- Indexes for dumped tables
