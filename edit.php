@@ -64,7 +64,8 @@ if(isset($_POST['update'])) {
 
 function getCodConsultorio() {
     if(empty($_GET["codConsultorio"])){
-        $value = 1;
+        header("Location: admin.php?");
+        exit;
     } else {
         $value = $_GET['codConsultorio'];
     } 
