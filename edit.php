@@ -34,6 +34,8 @@ if(isset($_POST['update'])) {
     // Determine if occupied
     $isOcupado = $dni == 0  || empty($dni) ? 0 : 1;
 
+    // ERROR: Falta sacarle el credito a una persona cuando ya no tiene mas cosas a su nombre, o en su defecto borrar su entry
+
     // Check if person already exists
     $result = mysqli_query($mysqli, "SELECT * FROM personas WHERE dni='$dni'");
     if(mysqli_num_rows($result) == 0) { 
