@@ -5,8 +5,16 @@ if(isset($_POST['update'])) {
     $dni = $_POST['dni'];
     $nombre = $_POST['name'];
     $credito = $_POST['credito'];
+    $deuda = $_POST['deuda'];
     $codHora = $_POST['codHora'];
     $codConsultorio = $_POST['codConsultorio'];
+
+    // Get the original DNI when the page loads
+    $queryHorasAlquiladas = "SELECT dni FROM horasalquiladas WHERE codHora = $codHora AND codConsultorio = $codConsultorio";
+    $resultHorasAlquiladas = mysqli_query($mysqli, $queryHorasAlquiladas);
+    $rowHorasAlquiladas = mysqli_fetch_assoc($resultHorasAlquiladas);
+
+    $originalDni = $rowHorasAlquiladas["dni"];
 
     // checking empty fields
     if ( empty($credito) ) {
@@ -23,17 +31,27 @@ if(isset($_POST['update'])) {
 
     // Check if person already exists
     $result = mysqli_query($mysqli, "SELECT * FROM personas WHERE dni='$dni'");
-    if(mysqli_num_rows($result) == 0) {
+    if(mysqli_num_rows($result) == 0) { 
         // If dni is not 0 and person does not exist, create a new entry in personas
-        if($dni != 0) {
+        if($dni != 0 && $dni != '') { // PROBLEMA: SE ACTUALIZA CON EL VALOR DEL DISPLAY DE $DEUDA EN EL MOMENTO
             $result = mysqli_query($mysqli, "INSERT INTO personas (dni, nombre, credito, deuda) VALUES ('$dni', '$nombre', '$credito', '$deuda')");
+            $result = mysqli_query($mysqli, "UPDATE personas SET deuda = deuda + 1000 WHERE dni='$dni'"); //FUNCIONANDO
         }
     } else {
         // If person exists, update the person
-        $result = mysqli_query($mysqli, "UPDATE personas SET nombre='$nombre', credito='$credito', deuda='$deuda' WHERE dni='$dni'");
+        if($dni == 0 || $dni == '') { // new entry en horasAlquiladas usando un dni existente, luego en la misma entry borrar el dni y que vuelva a 0
+            $result = mysqli_query($mysqli, "UPDATE personas SET nombre='', credito='0', deuda='0' WHERE dni='$dni'");
+        } elseif ($originalDni != 0 && $originalDni != '') { // new entry en horasAlquiladas usando un dni existente con $originalDni != 0
+            $result = mysqli_query($mysqli, "UPDATE personas SET nombre='$nombre', credito='$credito', deuda='$deuda' WHERE dni='$dni'");
+        } 
     } 
 
-    //updating the table
+    // If the DNI has changed and original DNI is not 0, reduce the debt of the original person by 1000
+    // if($originalDni != $dni && $originalDni != 0 && $originalDni != '') {
+    //     $result = mysqli_query($mysqli, "UPDATE personas SET deuda = deuda - 1000 WHERE dni='$originalDni'");
+    // }
+
+    //updating the table, new entry en horasAlquiladas: puede usar un dni existente y puede ser $originalDni != 0
     $result = mysqli_query($mysqli, "UPDATE horasalquiladas SET dni='$dni', isPagado='$isPagado', isOcupado='$isOcupado' WHERE codHora='$codHora' AND codConsultorio='$codConsultorio'");
     
     //redirectig to the display page. In our case, it is admin.php
