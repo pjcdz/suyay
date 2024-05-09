@@ -33,15 +33,15 @@ if(isset($_POST['update'])) {
     $result = mysqli_query($mysqli, "SELECT * FROM personas WHERE dni='$dni'");
     if(mysqli_num_rows($result) == 0) { 
         // If dni is not 0 and person does not exist, create a new entry in personas
-        if($dni != 0 && $dni != '') { // PROBLEMA: SE ACTUALIZA CON EL VALOR DEL DISPLAY DE $DEUDA EN EL MOMENTO
+        if($dni != 0 || !empty($dni) ) { 
             $result = mysqli_query($mysqli, "INSERT INTO personas (dni, nombre, credito, deuda) VALUES ('$dni', '$nombre', '$credito', '$deuda')");
             $result = mysqli_query($mysqli, "UPDATE personas SET deuda = deuda + 1000 WHERE dni='$dni'"); //FUNCIONANDO
         }
-    } else {
-        // If person exists, update the person
-        if($dni == 0 || $dni == '') { // new entry en horasAlquiladas usando un dni existente, luego en la misma entry borrar el dni y que vuelva a 0
+    } else { // PROBLEMA: SE ACTUALIZA CON EL VALOR DEL DISPLAY DE $DEUDA EN EL MOMENTO
+        // If person exists, update the person 
+        if($dni == 0 || empty($dni) ) { // new entry en horasAlquiladas usando un dni existente, luego en la misma entry borrar el dni y que vuelva a 0
             $result = mysqli_query($mysqli, "UPDATE personas SET nombre='', credito='0', deuda='0' WHERE dni='$dni'");
-        } elseif ($originalDni != 0 && $originalDni != '') { // new entry en horasAlquiladas usando un dni existente con $originalDni != 0
+        } elseif ($originalDni != 0 || !empty($originalDni) ) { // new entry en horasAlquiladas usando un dni existente con $originalDni != 0
             $result = mysqli_query($mysqli, "UPDATE personas SET nombre='$nombre', credito='$credito', deuda='$deuda' WHERE dni='$dni'");
         } 
     } 
