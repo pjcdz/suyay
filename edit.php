@@ -34,8 +34,6 @@ if(isset($_POST['update'])) {
     // Determine if occupied
     $isOcupado = $dni == 0  || empty($dni) ? 0 : 1;
 
-    // ERROR: Falta sacarle el credito a una persona cuando ya no tiene mas cosas a su nombre, o en su defecto borrar su entry
-
     // Check if person already exists
     $result = mysqli_query($mysqli, "SELECT * FROM personas WHERE dni='$dni'");
     if(mysqli_num_rows($result) == 0) { 
@@ -55,19 +53,27 @@ if(isset($_POST['update'])) {
         }
     } 
 
+    // ERROR: Falta sacarle el credito a una persona cuando ya no tiene mas cosas a su nombre, o en su defecto borrar su entry
+    // // Check if the original person no longer has anything in their name
+    // $result = mysqli_query($mysqli, "SELECT * FROM horasalquiladas WHERE dni='$originalDni'");
+    // if(mysqli_num_rows($result) == 0) {
+    //     // If the original person no longer has anything in their name, reduce their credit or delete their entry
+    //     $result = mysqli_query($mysqli, "UPDATE personas SET credito='0' WHERE dni='$originalDni'");
+    // }
+
     //updating the table
     $result = mysqli_query($mysqli, "UPDATE horasalquiladas SET dni='$dni', isPagado='$isPagado', isOcupado='$isOcupado' WHERE codHora='$codHora' AND codConsultorio='$codConsultorio'");
-    
+
     //redirectig to the display page. In our case, it is admin.php
     header("Location: admin.php?codConsultorio=$codConsultorio");
 }
 
 function getCodConsultorio() {
-    if(empty($_GET["codConsultorio"])){
-        header("Location: admin.php?");
+    if(empty($_GET["codConsultorio"]) && empty($_POST["codConsultorio"])){
+        header("Location: admin.php?codcon");
         exit;
     } else {
-        $value = $_GET['codConsultorio'];
+        $value = !empty($_GET['codConsultorio']) ? $_GET['codConsultorio'] : $_POST['codConsultorio'];
     } 
     return $value;
 }
@@ -75,12 +81,12 @@ function getCodConsultorio() {
 $codConsultorio = getCodConsultorio();
 
 function getCodHora() {
-    $codConsultorio = getCodConsultorio();
-    if(empty($_GET["codHora"])){
-        header("Location: admin.php?codConsultorio=$codConsultorio");
+    // $codConsultorio = getCodConsultorio();
+    if(empty($_GET["codHora"]) && empty($_POST["codConsultorio"]) ){
+        header("Location: admin.php?hora");
         exit;
     } else {
-        $value = $_GET['codHora'];
+        $value =  !empty($_GET['codHora']) ? $_GET['codHora'] : $_POST['codHora'];
     } 
     return $value;
 }

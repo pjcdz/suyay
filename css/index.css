@@ -61,7 +61,7 @@ html, body {
     background-color: #242424; /* Color de fondo oscuro */
     color: #ffffff; /* Color de texto claro */
     border: 1px solid #333333; /* Añade un borde de color gris oscuro */
-    font-size: 10px; /* Reduce el tamaño del texto */
+    font-size: 12px; /* Reduce el tamaño del texto */
 }
 
 #calendario .dia {
