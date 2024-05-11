@@ -53,7 +53,6 @@ if(isset($_POST['update'])) {
         }
     } 
 
-    // ERROR: Falta sacarle el credito a una persona cuando ya no tiene mas cosas a su nombre, o en su defecto borrar su entry
     // // Check if the original person no longer has anything in their name
     // $result = mysqli_query($mysqli, "SELECT * FROM horasalquiladas WHERE dni='$originalDni'");
     // if(mysqli_num_rows($result) == 0) {
@@ -66,76 +65,95 @@ if(isset($_POST['update'])) {
 
     //redirectig to the display page. In our case, it is admin.php
     header("Location: admin.php?codConsultorio=$codConsultorio");
-}
-
-function getCodConsultorio() {
-    if(empty($_GET["codConsultorio"]) && empty($_POST["codConsultorio"])){
-        header("Location: admin.php?codcon");
-        exit;
-    } else {
-        $value = !empty($_GET['codConsultorio']) ? $_GET['codConsultorio'] : $_POST['codConsultorio'];
-    } 
-    return $value;
-}
-
-$codConsultorio = getCodConsultorio();
-
-function getCodHora() {
-    // $codConsultorio = getCodConsultorio();
-    if(empty($_GET["codHora"]) && empty($_POST["codConsultorio"]) ){
-        header("Location: admin.php?hora");
-        exit;
-    } else {
-        $value =  !empty($_GET['codHora']) ? $_GET['codHora'] : $_POST['codHora'];
-    } 
-    return $value;
-}
-
-$codHora = getCodHora();
-
-$queryHorasAlquiladas = "SELECT dni, isOcupado, isPagado FROM horasalquiladas WHERE codHora = $codHora AND codConsultorio = $codConsultorio";
-$resultHorasAlquiladas = mysqli_query($mysqli, $queryHorasAlquiladas);
-$rowHorasAlquiladas = mysqli_fetch_assoc($resultHorasAlquiladas);
-
-$dni = $rowHorasAlquiladas["dni"];
-$isOcupado = $rowHorasAlquiladas["isOcupado"];
-$isPagado = $rowHorasAlquiladas["isPagado"];
-
-
-$queryConsultorios = "SELECT descripcion FROM consultorios WHERE codConsultorio = $codConsultorio";
-$resultConsultorios = mysqli_query($mysqli, $queryConsultorios);
-$rowConsultorios = mysqli_fetch_assoc($resultConsultorios);
-
-$descripcionConsultorio = $rowConsultorios["descripcion"];
-
-
-$queryHoras = "SELECT descripcion FROM horas WHERE codHora = $codHora";
-$resultHoras = mysqli_query($mysqli, $queryHoras);
-$rowHoras = mysqli_fetch_assoc($resultHoras);
-
-$descripcionHora = $rowHoras["descripcion"];
-
-
-$queryPersonas = "SELECT nombre, credito FROM personas WHERE dni = $dni";
-$resultPersonas = mysqli_query($mysqli, $queryPersonas);
-$rowPersonas = mysqli_fetch_assoc($resultPersonas);
-
-$nombre = $rowPersonas["nombre"];
-$credito = $rowPersonas["credito"];
-// $deuda = $rowPersonas["deuda"];
-
-if ($dni == 0) {
-    // If dni is 0, set count and deuda to 0
-    $count = 0;
-    $deuda = 0;
 } else {
-    // Get the count of rows with the given dni in horasalquiladas
-    $result = mysqli_query($mysqli, "SELECT COUNT(*) as count FROM horasalquiladas WHERE dni='$dni'");
-    $row = mysqli_fetch_array($result);
-    $count = $row['count'];
+    function consultorioExists($codConsultorio) {
+        global $mysqli;
+        $query = "SELECT * FROM consultorios WHERE codConsultorio = '$codConsultorio'";
+        $result = mysqli_query($mysqli, $query);
+        return mysqli_num_rows($result) > 0;
+    }
+    function horaExists($codHora) {
+        global $mysqli;
+        $query = "SELECT * FROM horas WHERE codHora = '$codHora'";
+        $result = mysqli_query($mysqli, $query);
+        return mysqli_num_rows($result) > 0;
+    }
 
-    // Set deuda to 1000 times the count
-    $deuda = $count * 1000;
+    function getCodConsultorio() {
+        if(empty($_GET["codConsultorio"]) && empty($_POST["codConsultorio"])){
+            header("Location: admin.php?");
+            exit;
+        } else {
+            $value = !empty($_GET['codConsultorio']) ? $_GET['codConsultorio'] : $_POST['codConsultorio'];
+            if (!consultorioExists($value)) {
+                header("Location: admin.php?");
+                exit;
+            }
+        } 
+        return $value;
+    }
+    $codConsultorio = getCodConsultorio();
+    
+    function getCodHora() {
+        $codConsultorio = getCodConsultorio();
+        if(empty($_GET["codHora"]) && empty($_POST["codConsultorio"]) ){
+            header("Location: admin.php?codConsultorio=$codConsultorio");
+            exit;
+        } else {
+            $value =  !empty($_GET['codHora']) ? $_GET['codHora'] : $_POST['codHora'];
+            if (!horaExists($value)) {
+                header("Location: admin.php?codConsultorio=$codConsultorio");
+                exit;
+            }
+        } 
+        return $value;
+    }
+    $codHora = getCodHora();
+    
+    $queryHorasAlquiladas = "SELECT dni, isOcupado, isPagado FROM horasalquiladas WHERE codHora = $codHora AND codConsultorio = $codConsultorio";
+    $resultHorasAlquiladas = mysqli_query($mysqli, $queryHorasAlquiladas);
+    $rowHorasAlquiladas = mysqli_fetch_assoc($resultHorasAlquiladas);
+    
+    $dni = $rowHorasAlquiladas["dni"];
+    $isOcupado = $rowHorasAlquiladas["isOcupado"];
+    $isPagado = $rowHorasAlquiladas["isPagado"];
+    
+    
+    $queryConsultorios = "SELECT descripcion FROM consultorios WHERE codConsultorio = $codConsultorio";
+    $resultConsultorios = mysqli_query($mysqli, $queryConsultorios);
+    $rowConsultorios = mysqli_fetch_assoc($resultConsultorios);
+    
+    $descripcionConsultorio = $rowConsultorios["descripcion"];
+    
+    
+    $queryHoras = "SELECT descripcion FROM horas WHERE codHora = $codHora";
+    $resultHoras = mysqli_query($mysqli, $queryHoras);
+    $rowHoras = mysqli_fetch_assoc($resultHoras);
+    
+    $descripcionHora = $rowHoras["descripcion"];
+    
+    
+    $queryPersonas = "SELECT nombre, credito FROM personas WHERE dni = $dni";
+    $resultPersonas = mysqli_query($mysqli, $queryPersonas);
+    $rowPersonas = mysqli_fetch_assoc($resultPersonas);
+    
+    $nombre = $rowPersonas["nombre"];
+    $credito = $rowPersonas["credito"];
+    // $deuda = $rowPersonas["deuda"];
+    
+    if ($dni == 0) {
+        // If dni is 0, set count and deuda to 0
+        $count = 0;
+        $deuda = 0;
+    } else {
+        // Get the count of rows with the given dni in horasalquiladas
+        $result = mysqli_query($mysqli, "SELECT COUNT(*) as count FROM horasalquiladas WHERE dni='$dni'");
+        $row = mysqli_fetch_array($result);
+        $count = $row['count'];
+    
+        // Set deuda to 1000 times the count
+        $deuda = $count * 1000;
+    }
 }
 
 ?>
