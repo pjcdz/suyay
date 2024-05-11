@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 09, 2024 at 07:32 PM
+-- Generation Time: May 11, 2024 at 06:12 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -197,8 +197,8 @@ INSERT INTO `horasalquiladas` (`codConsultorio`, `codHora`, `dni`, `isOcupado`, 
 (1, 11920, 0, 0, 0),
 (1, 12021, 0, 0, 0),
 (1, 12122, 0, 0, 0),
-(1, 20809, 0, 0, 0),
-(1, 20910, 0, 0, 0),
+(1, 20809, 123, 1, 0),
+(1, 20910, 1234, 1, 0),
 (1, 21011, 0, 0, 0),
 (1, 21112, 0, 0, 0),
 (1, 21213, 0, 0, 0),
@@ -267,7 +267,7 @@ INSERT INTO `horasalquiladas` (`codConsultorio`, `codHora`, `dni`, `isOcupado`, 
 (1, 61920, 0, 0, 0),
 (1, 62021, 0, 0, 0),
 (1, 62122, 0, 0, 0),
-(2, 10809, 0, 0, 0),
+(2, 10809, 123, 1, 0),
 (2, 10910, 0, 0, 0),
 (2, 11011, 0, 0, 0),
 (2, 11112, 0, 0, 0),
@@ -707,9 +707,9 @@ CREATE TABLE `personas` (
 
 INSERT INTO `personas` (`dni`, `nombre`, `credito`, `deuda`) VALUES
 (0, '', 0, 0),
-(123, '', 0, 1000),
-(1234, '', 0, 1000),
-(45178142, 'Pablo Cardozo', 1000, 0);
+(123, '', 0, 3000),
+(1234, '', 1000, 2000),
+(45178142, 'Pablo Cardozo', 0, 0);
 
 --
 -- Indexes for dumped tables
