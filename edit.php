@@ -53,15 +53,15 @@ if(isset($_POST['update'])) {
         }
     } 
 
-    // // Check if the original person no longer has anything in their name
-    // $result = mysqli_query($mysqli, "SELECT * FROM horasalquiladas WHERE dni='$originalDni'");
-    // if(mysqli_num_rows($result) == 0) {
-    //     // If the original person no longer has anything in their name, reduce their credit or delete their entry
-    //     $result = mysqli_query($mysqli, "UPDATE personas SET credito='0' WHERE dni='$originalDni'");
-    // }
-
     //updating the table
     $result = mysqli_query($mysqli, "UPDATE horasalquiladas SET dni='$dni', isPagado='$isPagado', isOcupado='$isOcupado' WHERE codHora='$codHora' AND codConsultorio='$codConsultorio'");
+
+    // Check if the original person no longer has anything in their name
+    $result = mysqli_query($mysqli, "SELECT * FROM horasalquiladas WHERE dni='$originalDni'");
+    if(mysqli_num_rows($result) == 0) {
+        // If the original person no longer has anything in their name, reduce their credit or delete their entry
+        $result = mysqli_query($mysqli, "UPDATE personas SET credito='0' WHERE dni='$originalDni'");
+    }
 
     //redirectig to the display page. In our case, it is admin.php
     header("Location: admin.php?codConsultorio=$codConsultorio");

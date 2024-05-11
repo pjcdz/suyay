@@ -1,0 +1,73 @@
+html, body {
+    box-sizing: border-box;
+    height: 100%; /* Cambia a 100% */
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    background-color: #121212;
+    color: #ffffff;
+}
+
+#contenedor-principal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* Cambia a 100% */
+    max-width: 390px;
+    box-sizing: border-box;
+    margin: auto;
+}
+
+#selector-consultorio, #calendario {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#selector-consultorio {
+    margin: 10px 0; /* Añade un margen superior e inferior de 10px y elimina el margen izquierdo y derecho */
+    text-align: center; /* Centra el texto del selector */
+}
+
+#selector-consultorio select {
+    width: 72%; /* Ocupa todo el ancho del contenedor */
+    background-color: #242424; /* Color de fondo oscuro */
+    color: #ffffff; /* Color de texto claro */
+    border: none; /* Elimina el borde */
+    padding: 10px; /* Añade un poco de padding para un mejor aspecto */
+}
+
+#calendario {
+    max-width: 100%; /* Anchura máxima igual a la de un iPhone XR */
+    height: 100%; /* Ajusta la altura al 100% de la ventana de visualización */
+    max-height: 896px; /* Altura máxima igual a la de un iPhone XR */
+    margin-bottom: 12px;
+}
+
+#calendario .hora {
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho y la altura */
+    display: flex;
+    flex-direction: row; /* Los 'días' se mostrarán horizontalmente */
+    height: calc(100% / 15); /* Divide el alto total entre el número de horas */
+}
+
+#calendario .dia, #calendario .tiempo {
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho y la altura */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90px; /* Reduce el ancho */
+    height: 100%; /* Cada 'dia' y 'tiempo' ocupará todo el alto disponible */
+    background-color: #242424; /* Color de fondo oscuro */
+    color: #ffffff; /* Color de texto claro */
+    border: 1px solid #333333; /* Añade un borde de color gris oscuro */
+    font-size: 12px; /* Reduce el tamaño del texto */
+}
+
+#calendario .dia {
+    background-color: rgba(0, 0, 0, 0); /* Cambia a tu color preferido */
+}
+
+#calendario .dia-false {
+    background-color: #7a0000; /* Cambia a tu color preferido */
+}
