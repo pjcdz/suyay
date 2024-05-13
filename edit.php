@@ -80,13 +80,13 @@ if(isset($_POST['update'])) {
     }
 
     function getCodConsultorio() {
-        if(empty($_GET["codConsultorio"]) && empty($_POST["codConsultorio"])){
-            header("Location: admin.php?");
+        if(empty($_GET["codConsultorio"])){
+            header("Location: admin.php");
             exit;
         } else {
-            $value = !empty($_GET['codConsultorio']) ? $_GET['codConsultorio'] : $_POST['codConsultorio'];
+            $value = $_GET['codConsultorio'];
             if (!consultorioExists($value)) {
-                header("Location: admin.php?");
+                header("Location: admin.php");
                 exit;
             }
         } 
@@ -96,11 +96,11 @@ if(isset($_POST['update'])) {
     
     function getCodHora() {
         $codConsultorio = getCodConsultorio();
-        if(empty($_GET["codHora"]) && empty($_POST["codConsultorio"]) ){
+        if(empty($_GET["codHora"])){
             header("Location: admin.php?codConsultorio=$codConsultorio");
             exit;
         } else {
-            $value =  !empty($_GET['codHora']) ? $_GET['codHora'] : $_POST['codHora'];
+            $value =  $_GET['codHora'];
             if (!horaExists($value)) {
                 header("Location: admin.php?codConsultorio=$codConsultorio");
                 exit;
