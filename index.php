@@ -11,12 +11,13 @@ function getCodConsultorio() {
 }
 
 $codConsultorio = getCodConsultorio();
-function getIsOcupado($codHora, $codConsultorio) {
+
+function getEstadoHora($codHora, $codConsultorio) {
     global $mysqli;
-    $query = "SELECT isOcupado FROM horasalquiladas WHERE codHora = $codHora AND codConsultorio = $codConsultorio";
+    $query = "SELECT isOcupado, isPagado FROM horasalquiladas WHERE codHora = $codHora AND codConsultorio = $codConsultorio";
     $result = mysqli_query($mysqli, $query);
     $row = mysqli_fetch_assoc($result);
-    return $row['isOcupado'];
+    return $row;
 }
 
 $codHoras0809 = array(10809, 20809, 30809, 40809, 50809, 60809);
@@ -34,6 +35,21 @@ $codHoras1920 = array(11920, 21920, 31920, 41920, 51920, 61920);
 $codHoras2021 = array(12021, 22021, 32021, 42021, 52021, 62021);
 $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
 
+function renderHoras($codHoras, $codConsultorio) {
+    foreach ($codHoras as $codHora) {
+        $estadoHora = getEstadoHora($codHora, $codConsultorio);
+        $class = 'dia';
+        if ($estadoHora['isOcupado']) {
+            $class .= ' dia-ocupado1';
+        }
+        echo "<a class=\"$class\"></a>";
+    }
+}
+
+$horas = ["8 - 9", "9 - 10", "10 - 11", "11 - 12", "12 - 13", "13 - 14", "14 - 15", "15 - 16", "16 - 17", "17 - 18", "18 - 19", "19 - 20", "20 - 21", "21 - 22"];
+$codHoras = ["codHoras0809", "codHoras0910", "codHoras1011", "codHoras1112", "codHoras1213", "codHoras1314", "codHoras1415", "codHoras1516", "codHoras1617", "codHoras1718", "codHoras1819", "codHoras1920", "codHoras2021", "codHoras2122"];
+
+
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +57,9 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Consultorios Interdisciplinarios - Psicología, Psicopedagogía, Fonoaudiología y afines.">
     <title>Suyay</title>
+    <link rel="icon" href="css/suyay.png" type="image/icon type">
     <link rel="stylesheet" href="css/index.css">
     <script src="js/index.js" defer></script>
 </head>
@@ -67,148 +85,17 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
                 <div class="tiempo">Mié.</div>
                 <div class="tiempo">Jue.</div>
                 <div class="tiempo">Vie.</div>
-                <div class="tiempo">Sáb.</div>
+                <div class="tiempo">Sáb</div>
             </div>
-            <div class="hora">
-                <div class="tiempo">8 - 9</div>
-                <?php
-                foreach ($codHoras0809 as $codHora) {
-                    $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
-                }
-                ?>
-            </div>
-            <!-- Repite esto para cada hora hasta las 21:00 -->
-            <div class="hora">
-                <div class="tiempo">9 - 10</div>
-                <?php
-                foreach ($codHoras0910 as $codHora) {
-                    $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
-                }
-                ?>
-            </div>
-            <!-- ... -->
-            <div class="hora">
-                <div class="tiempo">10 - 11</div>
-                <?php
-                foreach ($codHoras1011 as $codHora) {
-                    $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
-                }
-                ?>
-            </div>
-            <!-- ... -->
-            <div class="hora">
-                <div class="tiempo">11 - 12</div>
-                <?php
-                foreach ($codHoras1112 as $codHora) {
-                    $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
-                }
-                ?>
-            </div>
-            <!-- ... -->
-            <div class="hora">
-                <div class="tiempo">12 - 13</div>
-                <?php
-                foreach ($codHoras1213 as $codHora) {
-                    $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
-                }
-                ?>
-            </div>
-            <!-- ... -->
-            <div class="hora">
-                <div class="tiempo">13 - 14</div>
-                <?php
-                foreach ($codHoras1314 as $codHora) {
-                    $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
-                }
-                ?>
-            </div>
-            <!-- ... -->
-            <div class="hora">
-                <div class="tiempo">14 - 15</div>
-                <?php
-                foreach ($codHoras1415 as $codHora) {
-                    $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
-                }
-                ?>
-            </div>
-            <!-- ... -->
-            <div class="hora">
-                <div class="tiempo">15 - 16</div>
-                <?php
-                foreach ($codHoras1516 as $codHora) {
-                    $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
-                }
-                ?>
-            </div>
-            <!-- ... -->
-            <div class="hora">
-                <div class="tiempo">16 - 17</div>
-                <?php
-                foreach ($codHoras1617 as $codHora) {
-                    $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
-                }
-                ?>
-            </div>
-            <!-- ... -->
-            <div class="hora">
-                <div class="tiempo">17 - 18</div>
-                <?php
-                foreach ($codHoras1718 as $codHora) {
-                    $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
-                }
-                ?>
-            </div>
-            <!-- ... -->
-            <div class="hora">
-                <div class="tiempo">18 - 19</div>
-                <?php
-                foreach ($codHoras1819 as $codHora) {
-                    $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
-                }
-                ?>
-            </div>
-            <!-- ... -->
-            <div class="hora">
-                <div class="tiempo">19 - 20</div>
-                <?php
-                foreach ($codHoras1920 as $codHora) {
-                    $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
-                }
-                ?>
-            </div>
-            <!-- ... -->
-            <div class="hora">
-                <div class="tiempo">20 - 21</div>
-                <?php
-                foreach ($codHoras2021 as $codHora) {
-                    $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
-                }
-                ?>
-            </div>
-            <!-- ... -->
-            <div class="hora">
-                <div class="tiempo">21 - 22</div>
-                <?php
-                foreach ($codHoras2122 as $codHora) {
-                    $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-                    echo "<div class=\"dia $class\"></div>";
-                }
-                ?>
-            </div>
-            <!-- ... -->
+            <?php
+            for ($i = 0; $i < count($horas); $i++) {
+                echo '<div class="hora">';
+                echo '<div class="tiempo">' . $horas[$i] . '</div>';
+                $horaVariable = ${$codHoras[$i]};
+                renderHoras($horaVariable, $codConsultorio);
+                echo '</div>';
+            }
+            ?>
         </div>
     </div>
 </body>

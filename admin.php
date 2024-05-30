@@ -17,9 +17,14 @@ function getCodConsultorio() {
 }
 
 $codConsultorio = getCodConsultorio();
+
+// 1. Define un array asociativo para mapear los DNI a clases CSS.
+$dnis = array();
+
 function getEstadoHora($codHora, $codConsultorio) {
     global $mysqli;
-    $query = "SELECT isOcupado, isPagado FROM horasalquiladas WHERE codHora = $codHora AND codConsultorio = $codConsultorio";
+    // 2. En la función `getEstadoHora`, además de `isOcupado` y `isPagado`, selecciona también el DNI.
+    $query = "SELECT isOcupado, isPagado, dni FROM horasalquiladas WHERE codHora = $codHora AND codConsultorio = $codConsultorio";
     $result = mysqli_query($mysqli, $query);
     $row = mysqli_fetch_assoc($result);
     return $row;
@@ -41,16 +46,25 @@ $codHoras2021 = array(12021, 22021, 32021, 42021, 52021, 62021);
 $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
 
 function renderHoras($codHoras, $codConsultorio) {
+    global $dnis;
     foreach ($codHoras as $codHora) {
         $estadoHora = getEstadoHora($codHora, $codConsultorio);
         $class = 'dia';
+        $linkText = '';
         if ($estadoHora['isOcupado']) {
-            $class .= ' dia-ocupado';
-            if ($estadoHora['isPagado']) {
-                $class .= ' dia-ocupado-pagado';
+            $dni = $estadoHora['dni'];
+            if (isset($dnis[$dni])) {
+                $class .= ' ' . $dnis[$dni];
+            } else {
+                // Usa el operador de módulo para asegurarte de que el número de la clase no exceda 5.
+                $dnis[$dni] = 'dia-ocupado' . ((count($dnis) % 5) + 1);
+                $class .= ' ' . $dnis[$dni];
+            }
+            if (!$estadoHora['isPagado']) {
+                $linkText = '❌';
             }
         }
-        echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"$class\"></a>";
+        echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"$class\">$linkText</a>";
     }
 }
 
@@ -64,7 +78,8 @@ $codHoras = ["codHoras0809", "codHoras0910", "codHoras1011", "codHoras1112", "co
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suyay</title>
+    <title>Suyay - Admin</title>
+    <link rel="icon" href="css/suyay.png" type="image/icon type">
     <link rel="stylesheet" href="css/admin.css">
     <script src="js/index.js" defer></script>
 </head>

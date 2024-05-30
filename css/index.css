@@ -71,8 +71,8 @@ html, body {
     background-color: rgba(0, 0, 0, 0); /* Cambia a tu color preferido */
 }
 
-#calendario .dia-false {
-    background-color: #bbbafd77; /* 946FB0 */
+#calendario .dia-ocupado1 {
+    background-color: #f39bff87; /* 946FB0 */
 }
 
 /* ############ LAPTOP ########## */

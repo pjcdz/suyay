@@ -88,14 +88,29 @@ html, body {
     background-color: rgba(0, 0, 0, 0); /* Cambia a tu color preferido */
 }
 
-#calendario .dia-ocupado {
-    background-color: #bbbafd77; /* 946FB0 */
+#calendario .dia-ocupado1 {
+    background-color: #f39bff87; /* 946FB0 */
 }
 
-#calendario .dia-ocupado-pagado {
-    background-color: #bbbafdd7; /* 946FB0 */
+#calendario .dia-ocupado2 {
+    background-color: #392fff87; /* 946FB0 */
 }
 
+#calendario .dia-ocupado3 {
+    background-color: #42cdff87; /* 946FB0 */
+}
+
+#calendario .dia-ocupado4 {
+    background-color: #42ff4e87; /* 946FB0 */
+}
+
+#calendario .dia-ocupado5 {
+    background-color: #edff4287; /* 946FB0 */
+}
+
+a {
+    text-decoration: none;
+}
 @media screen and (min-width:992px) {
     #contenedor-principal {
         max-width: 600px; /* Aumenta el ancho máximo para pantallas más grandes */
