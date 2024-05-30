@@ -89,11 +89,11 @@ html, body {
 }
 
 #calendario .dia-ocupado {
-    background-color: #CCAFCF; /* 946FB0 */
+    background-color: #bbbafd77; /* 946FB0 */
 }
 
 #calendario .dia-ocupado-pagado {
-    background-color: #946FB0; /* 946FB0 */
+    background-color: #bbbafdd7; /* 946FB0 */
 }
 
 @media screen and (min-width:992px) {
