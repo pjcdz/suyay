@@ -4,8 +4,9 @@ html, body {
     margin: 0;
     padding: 0;
     overflow-x: auto;
-    background-color: #121212;
-    color: #ffffff;
+    background-color: #FFFFFF; /* FFFFFF */
+    color: #946FB0; /* 946FB0 */
+    font-family: sans-serif;
 }
 
 #contenedor-principal {
@@ -19,6 +20,7 @@ html, body {
     margin: auto;
 }
 
+
 #selector-consultorio, #calendario {
     width: 100%;
     box-sizing: border-box;
@@ -27,14 +29,32 @@ html, body {
 #selector-consultorio {
     margin: 10px 0; /* Añade un margen superior e inferior de 10px y elimina el margen izquierdo y derecho */
     text-align: center; /* Centra el texto del selector */
+    font-size: 16px; /* Reduce el tamaño del texto */
 }
 
 #selector-consultorio select {
     width: 72%; /* Ocupa todo el ancho del contenedor */
-    background-color: #242424; /* Color de fondo oscuro */
-    color: #ffffff; /* Color de texto claro */
+    background-color: #ABF3CD; /* ABF3CD */
+    color: #000000; /* 58D7DC */
     border: none; /* Elimina el borde */
     padding: 10px; /* Añade un poco de padding para un mejor aspecto */
+    font-size: 16px; /* Reduce el tamaño del texto */
+}
+
+#selector-consultorio button {
+    margin-left: 10px; /* Añade un margen a la izquierda para separarlo del select */
+    padding: 10px; /* Añade un poco de padding para un mejor aspecto */
+    background-color: #ABF3CD; /* ABF3CD */
+    color: #000000; /* 58D7DC */
+    border: none; /* Elimina el borde */
+    font-size: 16px; /* Reduce el tamaño del texto */
+    cursor: pointer; /* Cambia el cursor a un puntero cuando se pasa por encima */
+    transition: background-color 0.3s ease; /* Añade una transición suave al cambiar el color de fondo */
+}
+
+#selector-consultorio button:hover {
+    background-color: #946FB0; /* 946FB0 */
+    color: #FFFFFF; /* FFFFFF */
 }
 
 #calendario {
@@ -58,16 +78,26 @@ html, body {
     align-items: center;
     width: 90px; /* Reduce el ancho */
     height: 100%; /* Cada 'dia' y 'tiempo' ocupará todo el alto disponible */
-    background-color: #242424; /* Color de fondo oscuro */
-    color: #ffffff; /* Color de texto claro */
-    border: 1px solid #333333; /* Añade un borde de color gris oscuro */
-    font-size: 12px; /* Reduce el tamaño del texto */
+    background-color: #ABF3CD; /* ABF3CD */
+    color: #000000; /* 58D7DC */
+    border: 1px solid #BBBAFD; /* BBBAFD */
+    font-size: 16px; /* Reduce el tamaño del texto */
 }
 
 #calendario .dia {
     background-color: rgba(0, 0, 0, 0); /* Cambia a tu color preferido */
 }
 
-#calendario .dia-false {
-    background-color: #7a0000; /* Cambia a tu color preferido */
+#calendario .dia-ocupado {
+    background-color: #CCAFCF; /* 946FB0 */
+}
+
+#calendario .dia-ocupado-pagado {
+    background-color: #946FB0; /* 946FB0 */
+}
+
+@media screen and (min-width:992px) {
+    #contenedor-principal {
+        max-width: 600px; /* Aumenta el ancho máximo para pantallas más grandes */
+    }
 }

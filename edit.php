@@ -1,4 +1,10 @@
 <?php
+
+session_start();
+if(!isset($_SESSION['AdminLoginId'])) {
+    header("Location: login.php");
+}
+
 require "config/database.php";
 
 if(isset($_POST['update'])) {   
@@ -28,7 +34,7 @@ if(isset($_POST['update'])) {
     
     // Determine if paid
     if( $deuda != 0 ) {
-        $isPagado = $credito <= $deuda ? 0 : 1;
+        $isPagado = $credito < $deuda ? 0 : 1;
     }
 
     // Determine if occupied
@@ -55,6 +61,9 @@ if(isset($_POST['update'])) {
 
     //updating the table
     $result = mysqli_query($mysqli, "UPDATE horasalquiladas SET dni='$dni', isPagado='$isPagado', isOcupado='$isOcupado' WHERE codHora='$codHora' AND codConsultorio='$codConsultorio'");
+
+    //updating the table for all occurrences with the given DNI
+    $result = mysqli_query($mysqli, "UPDATE horasalquiladas SET isPagado='$isPagado' WHERE dni='$dni'");
 
     // Check if the original person no longer has anything in their name
     $result = mysqli_query($mysqli, "SELECT * FROM horasalquiladas WHERE dni='$originalDni'");

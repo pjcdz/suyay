@@ -67,7 +67,7 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
                 <div class="tiempo">Mié.</div>
                 <div class="tiempo">Jue.</div>
                 <div class="tiempo">Vie.</div>
-                <div class="tiempo">Sáb</div>
+                <div class="tiempo">Sáb.</div>
             </div>
             <div class="hora">
                 <div class="tiempo">8 - 9</div>

@@ -1,4 +1,10 @@
 <?php
+
+session_start();
+if(!isset($_SESSION['AdminLoginId'])) {
+    header("Location: login.php");
+}
+
 require "config/database.php";
 
 function getCodConsultorio() {
@@ -11,12 +17,12 @@ function getCodConsultorio() {
 }
 
 $codConsultorio = getCodConsultorio();
-function getIsOcupado($codHora, $codConsultorio) {
+function getEstadoHora($codHora, $codConsultorio) {
     global $mysqli;
-    $query = "SELECT isOcupado FROM horasalquiladas WHERE codHora = $codHora AND codConsultorio = $codConsultorio";
+    $query = "SELECT isOcupado, isPagado FROM horasalquiladas WHERE codHora = $codHora AND codConsultorio = $codConsultorio";
     $result = mysqli_query($mysqli, $query);
     $row = mysqli_fetch_assoc($result);
-    return $row['isOcupado'];
+    return $row;
 }
 
 $codHoras0809 = array(10809, 20809, 30809, 40809, 50809, 60809);
@@ -36,8 +42,15 @@ $codHoras2122 = array(12122, 22122, 32122, 42122, 52122, 62122);
 
 function renderHoras($codHoras, $codConsultorio) {
     foreach ($codHoras as $codHora) {
-        $class = getIsOcupado($codHora, $codConsultorio) ? 'dia dia-false' : 'dia';
-        echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"dia $class\"></a>";
+        $estadoHora = getEstadoHora($codHora, $codConsultorio);
+        $class = 'dia';
+        if ($estadoHora['isOcupado']) {
+            $class .= ' dia-ocupado';
+            if ($estadoHora['isPagado']) {
+                $class .= ' dia-ocupado-pagado';
+            }
+        }
+        echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"$class\"></a>";
     }
 }
 
@@ -67,6 +80,7 @@ $codHoras = ["codHoras0809", "codHoras0910", "codHoras1011", "codHoras1112", "co
                 <option value="admin.php?codConsultorio=5">Consultorio 5</option>
                 <option value="admin.php?codConsultorio=6">Consultorio 6</option>
             </select>
+            <button onclick="window.location.href='personas.php'">Personas</button>
         </div>
         <div id="calendario">
             <!-- Repite esta estructura para cada hora del día -->
