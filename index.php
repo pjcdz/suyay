@@ -61,7 +61,7 @@ $codHoras = ["codHoras0809", "codHoras0910", "codHoras1011", "codHoras1112", "co
     <title>Suyay</title>
     <link rel="icon" href="css/suyay.png" type="image/icon type">
     <link rel="stylesheet" href="css/index.css">
-    <script src="js/index.js" defer></script>
+    <script src="js/edit.js" defer></script>
 </head>
 <body>
     <div id="contenedor-principal">

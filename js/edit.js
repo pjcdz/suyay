@@ -22,3 +22,22 @@ window.onload = function() {
 
     checkDniOnLoad(); // Call on page load
 }
+
+for (let i = 0; i < 50; i++) {
+    createStar();
+}
+
+function createStar() {
+    let star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + 'vw';
+    star.style.animationDuration = (Math.random() * 20 + 20) + 's'; // Duración de animación aleatoria entre 20 y 40 segundos
+    star.style.opacity = Math.random();
+    star.style.top = Math.random() * 100 + 'vh';
+    document.body.appendChild(star);
+
+    star.addEventListener('animationend', function() {
+        document.body.removeChild(star);
+        createStar();
+    });
+}

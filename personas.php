@@ -63,6 +63,7 @@ if ($result->num_rows > 0) {
     <title>Suyay - Personas</title>
     <link rel="icon" href="css/suyay.png" type="image/icon type">
     <link rel="stylesheet" href="css/personas.css">
+    <script src="js/edit.js" defer></script>
 </head>
 <body>
     <div id="contenedor-principal">

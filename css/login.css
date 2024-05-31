@@ -26,34 +26,21 @@
 }
 
 body {
-    background-color: #FFFFFF; /* FFFFFF */
-    color: #946FB0; /* 946FB0 */
+    background-color: #FFFFFF;
+    color: #946FB0;
     font-family: sans-serif;
-    /* overflow-x: hidden; */
+    backdrop-filter: blur(10px);
 }
 
 #home {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-}
-
-#home #img {
-    position: absolute;
-    width: 100%;
-    height: 100vh;
-    background: linear-gradient(165deg,
-        #FFFFFF 0%, /* FFFFFF */
-        #ABF3CD 20%, /* ABF3CD */
-        #58D7DC 75%, /* 58D7DC */
-        #BBBAFD 100%), /* BBBAFD */
-        url(img/bg.jpg);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    animation: hue-animation 2s alternate infinite;
-    z-index: -1;
+    height: 90vh;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
 }
 
 #home #title {
@@ -71,11 +58,13 @@ body {
     align-items: center;
     width: 320px;
     height: 330px;
-    background: #FFFFFF; /* FFFFFF */
-    color: #946FB0; /* 946FB0 */
+    background: rgba(255, 255, 255, 0.1);
+    color: #946FB0;
     box-sizing: border-box;
     padding: 70px 30px;
-    border-radius: 25px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
 }
 
 .login-box .avatar {
@@ -109,12 +98,15 @@ body {
 
 .login-box input[type="text"], .login-box input[type="password"] {
     border: none;
-    border-bottom: 1px solid #ABF3CD; /* ABF3CD */
-    color: #58D7DC; /* 58D7DC */
-    background: transparent;
+    border-bottom: 1px solid #ABF3CD;
+    color: #58D7DC;
+    background: rgba(255, 255, 255, 0.1);
     outline: none;
     height: 40px;
     font-size: 16px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
 }
 
 .login-box input[type="submit"] {
@@ -133,13 +125,26 @@ body {
     border-radius: 20px;
     margin-top: 20px;
     transition: 0.5s;
-
 }
 
 .login-box input[type="submit"]:hover {
     cursor: pointer;
     transform: scale(1.05);
     color: #000;
+}
+
+.star {
+    position: absolute;
+    background-color: #000000;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    animation: moveStar 10s linear infinite;
+}
+
+@keyframes moveStar {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-100vh); }
 }
 
 

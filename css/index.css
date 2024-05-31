@@ -1,12 +1,13 @@
 html, body {
     box-sizing: border-box;
-    height: 100%; /* Cambia a 100% */
+    height: 100%;
     margin: 0;
     padding: 0;
     overflow-x: auto;
-    background-color: #FFFFFF; /* FFFFFF */
-    color: #946FB0; /* 946FB0 */
+    background-color: #FFFFFF;
+    color: #946FB0;
     font-family: sans-serif;
+    backdrop-filter: blur(10px); /* Añade el efecto de desenfoque */
 }
 
 #contenedor-principal {
@@ -14,11 +15,17 @@ html, body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100%; /* Cambia a 100% */
+    height: 100%;
     max-width: 390px;
     box-sizing: border-box;
     margin: auto;
+    background: rgba(255, 255, 255, 0.1); /* Añade transparencia */
+    border-radius: 10px; /* Añade bordes redondeados */
+    backdrop-filter: blur(10px); /* Añade el efecto de desenfoque */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Añade un borde */
 }
+
+
 
 #selector-consultorio, #calendario {
     width: 100%;
@@ -32,12 +39,15 @@ html, body {
 }
 
 #selector-consultorio select {
-    width: 72%; /* Ocupa todo el ancho del contenedor */
-    background-color: #ABF3CD; /* ABF3CD */
-    color: #000000; /* 58D7DC */
-    border: none; /* Elimina el borde */
-    padding: 10px; /* Añade un poco de padding para un mejor aspecto */
-    font-size: 16px; /* Reduce el tamaño del texto */
+    width: 72%;
+    background-color: rgba(171, 243, 205, 0.1); /* Añade transparencia */
+    color: #000000;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    backdrop-filter: blur(10px); /* Añade el efecto de desenfoque */
+    border: 1px solid rgba(0, 0, 0, 0.2); /* Añade un borde */
+    border-radius: 10px; /* Añade bordes redondeados */
 }
 
 #calendario {
@@ -55,16 +65,18 @@ html, body {
 }
 
 #calendario .dia, #calendario .tiempo {
-    box-sizing: border-box; /* Incluye el padding y el borde en el ancho y la altura */
+    box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 90px; /* Reduce el ancho */
-    height: 100%; /* Cada 'dia' y 'tiempo' ocupará todo el alto disponible */
-    background-color: #ABF3CD; /* ABF3CD */
-    color: #000000; /* 58D7DC */
-    border: 1px solid #BBBAFD; /* BBBAFD */
-    font-size: 16px; /* Reduce el tamaño del texto */
+    width: 90px;
+    height: 100%;
+    background-color: rgba(171, 243, 205, 0.1); /* Añade transparencia */
+    color: #000000;
+    border:1px solid rgba(187, 186, 253, 0.2); /* Añade un borde */
+    font-size: 14px;
+    backdrop-filter: blur(10px); /* Añade el efecto de desenfoque */
+    border-radius: 10px; /* Añade bordes redondeados */
 }
 
 #calendario .dia {
@@ -74,6 +86,21 @@ html, body {
 #calendario .dia-ocupado1 {
     background-color: #f39bff87; /* 946FB0 */
 }
+
+.star {
+    position: absolute;
+    background-color: #000000;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    animation: moveStar 10s linear infinite;
+}
+
+@keyframes moveStar {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-100vh); }
+}
+
 
 /* ############ LAPTOP ########## */
 

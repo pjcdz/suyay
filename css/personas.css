@@ -6,28 +6,34 @@ html, body {
     overflow-x: auto;
     background-color: #FFFFFF;
     color: #946FB0;
-    font-family: sans-serif;
+    font-family: 'Poppins', sans-serif;
+    backdrop-filter: blur(10px);
 }
 
 #contenedor-principal {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; /* Centra los elementos a lo largo del eje vertical */
-    padding-top: 20px; /* Añade un espacio de relleno en la parte superior */
-    max-width: 375px;
+    display: block;
+    max-width: 390px;
     box-sizing: border-box;
-    margin: auto;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-left: auto; /* Centra horizontalmente */
+    margin-right: auto; /* Centra horizontalmente */
+    text-align: center; /* Centra el texto y el botón horizontalmente */
 }
 
 #contenedor-principal button {
+    margin-top: 10px;
     padding: 10px;
-    background-color: #ABF3CD;
+    background-color: rgba(171, 243, 205, 0.1); /* Añade transparencia */
     color: #000000;
     border: none;
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
 }
 
 #contenedor-principal button:hover {
@@ -38,28 +44,77 @@ html, body {
 #contenedor-principal h1 {
     color: #946FB0;
     font-size: 24px;
-    margin-bottom: 10px;
+    margin: 10px;
 }
 
-#contenedor-principal table {
-    height: 200px; /* Altura máxima igual a la altura de la pantalla menos el espacio para los botones */
+#contenedor-principal table td {
+    width: 100%;
     box-sizing: border-box;
-    border-collapse: collapse;
+    margin: 10px 0;
+    text-align: center;
+    font-size: 16px;
+    background-color: rgba(185, 243, 171, 0.1);
+    color: #000000;
+    border: none;
+    padding: 8px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
 }
 
 #contenedor-principal table th, #contenedor-principal table td {
-    padding: 10px;
+    padding: 8px;
     text-align: center;
     border: 1px solid #BBBAFD;
     font-size: 11.5px;
 }
 
 #contenedor-principal table th {
-    background-color: #ABF3CD;
+    background-color: rgba(171, 243, 205, 0.1); /* Añade transparencia */
     color: #000000;
 }
 
 #contenedor-principal table td {
     background-color: #FFFFFF;
     color: #75578a;
+}
+
+#contenedor-principal table th:nth-child(1), #contenedor-principal table td:nth-child(1) {
+    /* Ajusta el ancho de la columna DNI */
+    width: 10%;
+}
+
+#contenedor-principal table th:nth-child(2), #contenedor-principal table td:nth-child(2) {
+    /* Ajusta el ancho de la columna DNI */
+    width: 10%;
+}
+
+#contenedor-principal table th:nth-child(3), #contenedor-principal table td:nth-child(3) {
+    /* Ajusta el ancho de la columna DNI */
+    width: 10%;
+}
+
+#contenedor-principal table th:nth-child(4), #contenedor-principal table td:nth-child(4) {
+    /* Ajusta el ancho de la columna DNI */
+    width: 10%;
+}
+
+
+#contenedor-principal table th:nth-child(5), #contenedor-principal table td:nth-child(5) {
+    /* Ajusta el ancho de la columna Ocupación */
+    max-width: 50%;
+}
+
+.star {
+    position: absolute;
+    background-color: #000000;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    animation: moveStar 10s linear infinite;
+}
+
+@keyframes moveStar {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-100vh); }
 }

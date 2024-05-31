@@ -12,6 +12,7 @@ require "config/database.php";
         <title>Suyay - Login</title>
         <link rel="icon" href="css/suyay.png" type="image/icon type">
         <link rel="stylesheet" href="css/login.css">
+        <script src="js/edit.js" defer></script>
         <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=DM+Sans%3A700%7CHeebo%3A400%2C700%7CAldrich%3A400&#038;display=swap&#038;ver=6.0.2' media='all'>
     </head>
     <body>
