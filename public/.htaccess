@@ -1,3 +1,5 @@
+# apache_custom.conf
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
@@ -16,3 +18,7 @@
     # Reescribir URL para ocultar las variables en index
     RewriteRule ^([0-9]+)$ index.php?codConsultorio=$1 [L,QSA]
 </IfModule>
+
+# Añadir la configuración personalizada
+LimitInternalRecursion 20
+LogLevel alert rewrite:trace3
