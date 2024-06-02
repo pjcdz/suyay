@@ -1,19 +1,19 @@
 <?php return array(
     'root' => array(
-        'name' => 'myapp/import',
+        'name' => 'myapp/suyay',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'ae4c032cfe1b529a77740f6b9d5dad702425aa35',
+        'reference' => 'c89ec644a7752f8a90d11f4806c4332e76b0738e',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
-        'myapp/import' => array(
+        'myapp/suyay' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'ae4c032cfe1b529a77740f6b9d5dad702425aa35',
+            'reference' => 'c89ec644a7752f8a90d11f4806c4332e76b0738e',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
