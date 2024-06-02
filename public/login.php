@@ -1,6 +1,6 @@
 <?php
 
-require "config/database.php";
+require_once '../config/database.php';
 
 ?>
 
@@ -10,12 +10,13 @@ require "config/database.php";
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Suyay - Login</title>
-        <link rel="icon" href="css/suyay.png" type="image/icon type">
-        <link rel="stylesheet" href="css/login.css">
-        <script src="js/edit.js" defer></script>
-        <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=DM+Sans%3A700%7CHeebo%3A400%2C700%7CAldrich%3A400&#038;display=swap&#038;ver=6.0.2' media='all'>
+        <link rel="icon" href="/css/suyay.png" type="image/icon type">
+        <link rel="stylesheet" href="/css/login.css">
+        <script src="/js/edit.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     </head>
     <body>
+        <div id="particles-js"></div>
         <section id="home">
             <div class="login-box">
                 <img src="css/suyay.png" class="avatar" alt="Avatar Image">
@@ -57,7 +58,7 @@ require "config/database.php";
                         if (password_verify($_POST['AdminPassword'], $admin['password_hash'])) {
                             session_start();
                             $_SESSION['AdminLoginId'] = $username;
-                            header("Location: admin.php");
+                            header("Location: admin");
                             exit(); // Termina la ejecución del script después de redirigir
                         } else {
                             echo "<script>alert('Contraseña incorrecta');</script>";

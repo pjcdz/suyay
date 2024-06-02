@@ -1,6 +1,5 @@
 ::-webkit-scrollbar {
-    width:16px;
-    background-color: #ABF3CD; /* ABF3CD */
+    width:16px
 }
 
 ::-webkit-scrollbar-thumb {
@@ -8,13 +7,12 @@
     border-radius:8px;
     border:4px solid transparent;
     background-clip:content-box;
-    background-color: #58D7DC; /* 58D7DC */
+    background-color:#484e51
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #BBBAFD; /* BBBAFD */
+    background-color:#555c60
 }
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -25,7 +23,10 @@
     user-select: none; /* Standard */
 }
 
-body {
+html, body {
+    overflow-y: hidden;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
     background-color: #FFFFFF; /* FFFFFF */
     color: #946FB0; /* 946FB0 */
     font-family: sans-serif;
@@ -34,18 +35,17 @@ body {
 
 /* The Modal (background) */
 .edit-modal {
-    display: block; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     width: 100%; /* Full width */
-    height: 100%; /* Full height */
+    height: 100vh; /* Full height */
     overflow: auto; /* Enable scroll if needed */
     background: rgb(255, 255, 255);
-    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-    backdrop-filter: blur( 4px );
-    -webkit-backdrop-filter: blur( 4px );
+    box-shadow: 0 0px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 2px );
+    -webkit-backdrop-filter: blur( 2px );
     border-radius: 10px;
     border: 1px solid rgba( 255, 255, 255, 0.18 );
     animation-name: fadeIn;
@@ -54,13 +54,14 @@ body {
 
   /* Modal Content */
 .modal-content {
-    position: absolute;
-    top: 50%; right: 50%;
-    transform: translate(50%,-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     background: rgba( 255, 255, 255, 0.25 );
     box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-    backdrop-filter: blur( 4px );
-    -webkit-backdrop-filter: blur( 4px );
+    backdrop-filter: blur( 2px );
+    -webkit-backdrop-filter: blur( 2px );
     border-radius: 10px;
     border: px solid rgba( 255, 255, 255, 0.18 );
     width: 300px;
@@ -99,12 +100,14 @@ body {
 
 .modal-body {
     padding: 2px 16px;
+    width: 264px;
 }
 
 .modal-body label {
     margin-top: 20px;
     padding: 0;
     font-weight: bold;
+    font-size: 15px;
     display: block;
     color: #946FB0; /* 946FB0 */
 }
@@ -131,6 +134,10 @@ option {
 }
 
 .modal-footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
     margin-top: 10px;
     bottom: 0px;
     height: 66px;
@@ -138,11 +145,15 @@ option {
     border-bottom-right-radius: 25px;
 }
 
+.modal-footer a {
+    text-decoration: none; /* Elimina el subrayado */
+}
+
 .modal-footer #cancelar, .modal-footer #guardar {
-    position: absolute;
-    bottom: 12px;
+    position: relative;
+    bottom: -6px;
     height: 50px;
-    width: 132px;
+    width: 145px;
     transition: 0.5s;
     display: flex;
     align-items: center;
@@ -154,15 +165,14 @@ option {
     border: 0;
 }
 .modal-footer #cancelar {
-    left: 10px;
     background-color: #da0641;
-    border-bottom-left-radius: 15px;
+    border-bottom-left-radius: 25px;
 }
 
 .modal-footer #guardar {
-    right: 10px;
+    padding: 0px 22px;
     background-color: #52a352;
-    border-bottom-right-radius: 15px;
+    border-bottom-right-radius: 25px;
 }
 
 .modal-footer #cancelar:hover, .modal-footer #guardar:hover {
@@ -171,17 +181,9 @@ option {
 
 /* ##################################################################################################################################### */
 
-.star {
+#particles-js {
     position: absolute;
-    background-color: #000000;
-    width: 2px;
-    height: 2px;
-    border-radius: 50%;
-    z-index: 9999;
-    animation: moveStar 10s linear infinite;
-}
-
-@keyframes moveStar {
-    0% { transform: translateY(0px); }
-    100% { transform: translateY(-100vh); }
+    width: 100%;
+    height: 100%;
+    z-index: -1;
 }

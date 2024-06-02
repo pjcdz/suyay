@@ -1,0 +1,5 @@
+{
+    "name": "myapp/import",
+    "description": "A simple PHP app for Heroku",
+    "require": {}
+}

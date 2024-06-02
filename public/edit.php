@@ -2,10 +2,10 @@
 
 session_start();
 if(!isset($_SESSION['AdminLoginId'])) {
-    header("Location: login.php");
+    header("Location: login");
 }
 
-require "config/database.php";
+require_once '../config/database.php';
 
 if(isset($_POST['update'])) {   
     $dni = $_POST['dni'];
@@ -72,8 +72,8 @@ if(isset($_POST['update'])) {
         $result = mysqli_query($mysqli, "UPDATE personas SET credito='0' WHERE dni='$originalDni'");
     }
 
-    //redirectig to the display page. In our case, it is admin.php
-    header("Location: admin.php?codConsultorio=$codConsultorio");
+    //redirectig to the display page. In our case, it is admin
+    header("Location: admin/$codConsultorio");
 } else {
     function consultorioExists($codConsultorio) {
         global $mysqli;
@@ -90,12 +90,12 @@ if(isset($_POST['update'])) {
 
     function getCodConsultorio() {
         if(empty($_GET["codConsultorio"])){
-            header("Location: admin.php");
+            header("Location: admin");
             exit;
         } else {
             $value = $_GET['codConsultorio'];
             if (!consultorioExists($value)) {
-                header("Location: admin.php");
+                header("Location: admin");
                 exit;
             }
         } 
@@ -106,12 +106,12 @@ if(isset($_POST['update'])) {
     function getCodHora() {
         $codConsultorio = getCodConsultorio();
         if(empty($_GET["codHora"])){
-            header("Location: admin.php?codConsultorio=$codConsultorio");
+            header("Location: admin/$codConsultorio");
             exit;
         } else {
             $value =  $_GET['codHora'];
             if (!horaExists($value)) {
-                header("Location: admin.php?codConsultorio=$codConsultorio");
+                header("Location: admin/$codConsultorio");
                 exit;
             }
         } 
@@ -173,11 +173,13 @@ if(isset($_POST['update'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Suyay - Edit</title>
-    <link rel="icon" href="css/suyay.png" type="image/icon type">
-    <link rel="stylesheet" href="css/edit.css">
-    <script src="js/edit.js" defer></script>
+    <link rel="icon" href="/css/suyay.png" type="image/icon type">
+    <link rel="stylesheet" href="/css/edit.css">
+    <script src="/js/edit.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </head>
 <body>
+    <div id="particles-js"></div>
     <div id="contenedor-principal">
         <div class="edit-modal">
             <div class="modal-content">
@@ -186,7 +188,7 @@ if(isset($_POST['update'])) {
                     <h2><?php echo $descripcionHora; ?></h2>
                 </div>
                 <div class="modal-body">
-                    <form name="form1" method="post" action="edit.php">
+                    <form name="form1" method="post">
                         <label for="dni">DNI</label>
                         <input type="text" name="dni" value="<?php echo $dni; ?>" onkeypress="isInputNumber(event)">
                         <label for="name">Nombre</label>
@@ -198,7 +200,7 @@ if(isset($_POST['update'])) {
                         <input type="hidden" name="codHora" value="<?php echo $codHora; ?>">
                         <input type="hidden" name="codConsultorio" value="<?php echo $codConsultorio; ?>">
                         <div class="modal-footer">
-                            <a href="admin.php?codConsultorio=<?php echo $codConsultorio; ?>">
+                            <a href="admin/<?php echo $codConsultorio; ?>">
                                 <div id="cancelar">CANCELAR</div>
                             </a>
                             <input type="submit" id="guardar" name="update" value="GUARDAR">

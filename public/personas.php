@@ -2,10 +2,10 @@
 
 session_start();
 if(!isset($_SESSION['AdminLoginId'])) {
-    header("Location: login.php");
+    header("Location: login");
 }
 
-require "config/database.php";
+require_once '../config/database.php';
 
 
 // Consulta SQL para obtener los datos de las personas y sus horas alquiladas junto con las descripciones
@@ -61,13 +61,15 @@ if ($result->num_rows > 0) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Suyay - Personas</title>
-    <link rel="icon" href="css/suyay.png" type="image/icon type">
-    <link rel="stylesheet" href="css/personas.css">
-    <script src="js/edit.js" defer></script>
+    <link rel="icon" href="/css/suyay.png" type="image/icon type">
+    <link rel="stylesheet" href="/css/personas.css">
+    <script src="/js/edit.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </head>
 <body>
+    <div id="particles-js"></div>
     <div id="contenedor-principal">
-        <button onclick="window.location.href='admin.php'">Ir a Consultorios</button>
+        <button onclick="window.location.href='admin'">Ir a Consultorios</button>
         <h1>Lista de Personas</h1>
         <table border="1">
             <thead>

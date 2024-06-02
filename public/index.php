@@ -1,5 +1,5 @@
 <?php
-require "config/database.php";
+require_once '../config/database.php';
 
 function getCodConsultorio() {
     if(empty($_GET["codConsultorio"])){
@@ -57,23 +57,37 @@ $codHoras = ["codHoras0809", "codHoras0910", "codHoras1011", "codHoras1112", "co
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suyay - Consultorios Interdisciplinarios</title>
+    <link rel="icon" href="/css/suyay.png" type="image/icon type">
+    <link rel="stylesheet" href="/css/index.css">
+    <script src="/js/edit.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <!-- Imagen que se mostrará cuando se comparta la página -->
+    <meta property="og:image" content="/css/suyay.png">
+
+    <!-- Título que se mostrará cuando se comparta la página -->
+    <meta property="og:title" content="Suyay">
     <meta name="description" content="Consultorios Interdisciplinarios - Psicología, Psicopedagogía, Fonoaudiología y afines.">
-    <title>Suyay</title>
-    <link rel="icon" href="css/suyay.png" type="image/icon type">
-    <link rel="stylesheet" href="css/index.css">
-    <script src="js/edit.js" defer></script>
+
+    <!-- Descripción que se mostrará cuando se comparta la página -->
+    <meta property="og:description" content="Consultorios Interdisciplinarios - Psicología, Psicopedagogía, Fonoaudiología y afines.">
+
+    <!-- Tipo de contenido (por ejemplo, website, article, etc.) -->
+    <meta property="og:type" content="website">
 </head>
 <body>
+    <div id="particles-js"></div>
     <div id="contenedor-principal">
         <div id="selector-consultorio">
         <select id="consultorioSelect" onchange="window.location.href=this.value;">
-                <option value="index.php?codConsultorio=<?php echo $codConsultorio; ?>">Consultorio seleccionado: <?php echo $codConsultorio; ?></option>
-                <option value="index.php?codConsultorio=1">Consultorio 1</option>
-                <option value="index.php?codConsultorio=2">Consultorio 2</option>
-                <option value="index.php?codConsultorio=3">Consultorio 3</option>
-                <option value="index.php?codConsultorio=4">Consultorio 4</option>
-                <option value="index.php?codConsultorio=5">Consultorio 5</option>
-                <option value="index.php?codConsultorio=6">Consultorio 6</option>
+                <option value="index/<?php echo $codConsultorio; ?>">Consultorio seleccionado: <?php echo $codConsultorio; ?></option>
+                <option value="index/1">Consultorio 1</option>
+                <option value="index/2">Consultorio 2</option>
+                <option value="index/3">Consultorio 3</option>
+                <option value="index/4">Consultorio 4</option>
+                <option value="index/5">Consultorio 5</option>
+                <option value="index/6">Consultorio 6</option>
             </select>
         </div>
         <div id="calendario">
