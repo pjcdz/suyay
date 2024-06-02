@@ -2,10 +2,10 @@
 
 session_start();
 if(!isset($_SESSION['AdminLoginId'])) {
-    header("Location: login");
+    header("Location: login.php");
 }
 
-require_once '../config/database.php';
+require "config/database.php";
 
 
 // Consulta SQL para obtener los datos de las personas y sus horas alquiladas junto con las descripciones
@@ -69,7 +69,7 @@ if ($result->num_rows > 0) {
 <body>
     <div id="particles-js"></div>
     <div id="contenedor-principal">
-        <button onclick="window.location.href='admin'">Ir a Consultorios</button>
+        <button onclick="window.location.href='admin.php'">Ir a Consultorios</button>
         <h1>Lista de Personas</h1>
         <table border="1">
             <thead>

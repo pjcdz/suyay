@@ -1,5 +1,5 @@
 <?php
-require_once '../config/database.php';
+require "config/database.php";
 
 function getCodConsultorio() {
     if(empty($_GET["codConsultorio"])){
@@ -81,13 +81,13 @@ $codHoras = ["codHoras0809", "codHoras0910", "codHoras1011", "codHoras1112", "co
     <div id="contenedor-principal">
         <div id="selector-consultorio">
         <select id="consultorioSelect" onchange="window.location.href=this.value;">
-                <option value="/<?php echo $codConsultorio; ?>">Consultorio seleccionado: <?php echo $codConsultorio; ?></option>
-                <option value="/1">Consultorio 1</option>
-                <option value="/2">Consultorio 2</option>
-                <option value="/3">Consultorio 3</option>
-                <option value="/4">Consultorio 4</option>
-                <option value="/5">Consultorio 5</option>
-                <option value="/6">Consultorio 6</option>
+                <option value="index.php?codConsultorio=<?php echo $codConsultorio; ?>">Consultorio seleccionado: <?php echo $codConsultorio; ?></option>
+                <option value="index.php?codConsultorio=1">Consultorio 1</option>
+                <option value="index.php?codConsultorio=2">Consultorio 2</option>
+                <option value="index.php?codConsultorio=3">Consultorio 3</option>
+                <option value="index.php?codConsultorio=4">Consultorio 4</option>
+                <option value="index.php?codConsultorio=5">Consultorio 5</option>
+                <option value="index.php?codConsultorio=6">Consultorio 6</option>
             </select>
         </div>
         <div id="calendario">

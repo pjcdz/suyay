@@ -2,10 +2,10 @@
 
 session_start();
 if(!isset($_SESSION['AdminLoginId'])) {
-    header("Location: login");
+    header("Location: login.php");
 }
 
-require_once '../config/database.php';
+require "config/database.php";
 
 function getCodConsultorio() {
     if(empty($_GET["codConsultorio"])){
@@ -64,7 +64,7 @@ function renderHoras($codHoras, $codConsultorio) {
                 $linkText = '❌';
             }
         }
-        echo "<a href=\"edit/$codConsultorio/$codHora\" class=\"$class\">$linkText</a>";
+        echo "<a href=\"edit.php?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"$class\">$linkText</a>";
     }
 }
 
@@ -79,7 +79,7 @@ $codHoras = ["codHoras0809", "codHoras0910", "codHoras1011", "codHoras1112", "co
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Suyay - Admin</title>
-    <link rel="icon" href="/css/suyay.png" type="image/icon type">
+    <link rel="icon" href="css/suyay.png" type="image/icon type">
     <link rel="stylesheet" href="/css/index.css">
     <script src="/js/edit.js" defer></script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
@@ -89,15 +89,15 @@ $codHoras = ["codHoras0809", "codHoras0910", "codHoras1011", "codHoras1112", "co
     <div id="contenedor-principal">
         <div id="selector-consultorio">
         <select id="consultorioSelect" onchange="window.location.href=this.value;">
-                <option value="admin/<?php echo $codConsultorio; ?>">Consultorio seleccionado: <?php echo $codConsultorio; ?></option>
-                <option value="admin/1">Consultorio 1</option>
-                <option value="admin/2">Consultorio 2</option>
-                <option value="admin/3">Consultorio 3</option>
-                <option value="admin/4">Consultorio 4</option>
-                <option value="admin/5">Consultorio 5</option>
-                <option value="admin/6">Consultorio 6</option>
+                <option value="admin.php?codConsultorio=<?php echo $codConsultorio; ?>">Consultorio seleccionado: <?php echo $codConsultorio; ?></option>
+                <option value="admin.php?codConsultorio=1">Consultorio 1</option>
+                <option value="admin.php?codConsultorio=2">Consultorio 2</option>
+                <option value="admin.php?codConsultorio=3">Consultorio 3</option>
+                <option value="admin.php?codConsultorio=4">Consultorio 4</option>
+                <option value="admin.php?codConsultorio=5">Consultorio 5</option>
+                <option value="admin.php?codConsultorio=6">Consultorio 6</option>
             </select>
-            <button onclick="window.location.href='personas'">Personas</button>
+            <button onclick="window.location.href='personas.php'">Personas</button>
         </div>
         <div id="calendario">
             <!-- Repite esta estructura para cada hora del día -->
