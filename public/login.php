@@ -14,6 +14,18 @@ require_once '../config/database.php';
         <link rel="stylesheet" href="/css/login.css">
         <script src="/js/edit.js" defer></script>
         <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+            <!-- Imagen que se mostrará cuando se comparta la página -->
+        <meta property="og:image" content="/css/suyayIcon.png">
+
+        <!-- Título que se mostrará cuando se comparta la página -->
+        <meta property="og:title" content="Suyay">
+        <meta name="description" content="Consultorios Interdisciplinarios - Psicología, Psicopedagogía, Fonoaudiología y afines.">
+
+        <!-- Descripción que se mostrará cuando se comparta la página -->
+        <meta property="og:description" content="Consultorios Interdisciplinarios - Psicología, Psicopedagogía, Fonoaudiología y afines.">
+
+        <!-- Tipo de contenido (por ejemplo, website, article, etc.) -->
+        <meta property="og:type" content="website">
     </head>
     <body>
         <div id="particles-js"></div>

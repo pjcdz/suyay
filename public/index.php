@@ -64,7 +64,7 @@ $codHoras = ["codHoras0809", "codHoras0910", "codHoras1011", "codHoras1112", "co
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <!-- Imagen que se mostrará cuando se comparta la página -->
-    <meta property="og:image" content="/css/suyay.png">
+    <meta property="og:image" content="/css/suyayIcon.png">
 
     <!-- Título que se mostrará cuando se comparta la página -->
     <meta property="og:title" content="Suyay">
