@@ -22,9 +22,9 @@ if(isset($_POST['update'])) {
 
     $originalDni = $rowHorasAlquiladas["dni"];
 
-    // If the DNI has changed, reduce the debt of the original person by 1000
+    // If the DNI has changed, reduce the debt of the original person by 1500
     if($originalDni != $dni && $originalDni != 0 && !empty($originalDni)) {
-        $result = mysqli_query($mysqli, "UPDATE personas SET deuda = deuda - 1000 WHERE dni='$originalDni'");
+        $result = mysqli_query($mysqli, "UPDATE personas SET deuda = deuda - 1500 WHERE dni='$originalDni'");
     }
 
     // checking empty fields
@@ -46,14 +46,14 @@ if(isset($_POST['update'])) {
         // If dni is not 0 and person does not exist, create a new entry in personas
         if( $dni != 0 || !empty($dni) ) { 
             $result = mysqli_query($mysqli, "INSERT INTO personas (dni, nombre, credito, deuda) VALUES ('$dni', '$nombre', '$credito', '$deuda')");
-            $result = mysqli_query($mysqli, "UPDATE personas SET deuda = deuda + 1000 WHERE dni='$dni'");
+            $result = mysqli_query($mysqli, "UPDATE personas SET deuda = deuda + 1500 WHERE dni='$dni'");
         }
     } else {
         // If person exists, update the person 
         if( $dni == 0 || empty($dni) ) { 
             $result = mysqli_query($mysqli, "UPDATE personas SET nombre='', credito='0', deuda='0' WHERE dni='$dni'");
         } elseif ( $originalDni != $dni && $dni != 0 && !empty($dni) ) {
-            $result = mysqli_query($mysqli, "UPDATE personas SET deuda = deuda + 1000 WHERE dni='$dni'");
+            $result = mysqli_query($mysqli, "UPDATE personas SET deuda = deuda + 1500 WHERE dni='$dni'");
         } elseif ( $originalDni != 0 && !empty($originalDni) ) {
             $result = mysqli_query($mysqli, "UPDATE personas SET nombre='$nombre', credito='$credito', deuda='$deuda' WHERE dni='$dni'");
         }
@@ -160,8 +160,8 @@ if(isset($_POST['update'])) {
         $row = mysqli_fetch_array($result);
         $count = $row['count'];
     
-        // Set deuda to 1000 times the count
-        $deuda = $count * 1000;
+        // Set deuda to 1500 times the count
+        $deuda = $count * 1500;
     }
 }
 

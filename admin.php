@@ -94,8 +94,8 @@ $codHoras = ["codHoras0809", "codHoras0910", "codHoras1011", "codHoras1112", "co
                 <option value="admin.php?codConsultorio=2">Consultorio 2</option>
                 <option value="admin.php?codConsultorio=3">Consultorio 3</option>
                 <option value="admin.php?codConsultorio=4">Consultorio 4</option>
-                <option value="admin.php?codConsultorio=5">Consultorio 5</option>
-                <option value="admin.php?codConsultorio=6">Consultorio 6</option>
+                <!-- <option value="admin.php?codConsultorio=5">Consultorio 5</option>
+                <option value="admin.php?codConsultorio=6">Consultorio 6</option> -->
             </select>
             <button onclick="window.location.href='personas.php'">Personas</button>
         </div>
