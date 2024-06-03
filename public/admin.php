@@ -5,7 +5,7 @@ if(!isset($_SESSION['AdminLoginId'])) {
     header("Location: login.php");
 }
 
-require "config/database.php";
+require_once '../config/database.php';
 
 function getCodConsultorio() {
     if(empty($_GET["codConsultorio"])){
