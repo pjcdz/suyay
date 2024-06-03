@@ -58,7 +58,7 @@ require_once '../config/database.php';
                         if (password_verify($_POST['AdminPassword'], $admin['password_hash'])) {
                             session_start();
                             $_SESSION['AdminLoginId'] = $username;
-                            header("Location: admin.php");
+                            header("Location: admin");
                             exit(); // Termina la ejecución del script después de redirigir
                         } else {
                             echo "<script>alert('Contraseña incorrecta');</script>";
