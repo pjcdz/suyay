@@ -99,7 +99,7 @@ $codHoras = ["codHoras0809", "codHoras0910", "codHoras1011", "codHoras1112", "co
                 <div class="tiempo">Mié.</div>
                 <div class="tiempo">Jue.</div>
                 <div class="tiempo">Vie.</div>
-                <div class="tiempo">Sáb</div>
+                <div class="tiempo">Sáb.</div>
             </div>
             <?php
             for ($i = 0; $i < count($horas); $i++) {
