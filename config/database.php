@@ -22,13 +22,6 @@ if ($database_url) {
     $password = $url_parts['pass'];
     $port = $url_parts['port']; // Obtener el puerto de la URL
 
-    // Depuración: imprimir los valores obtenidos
-    echo "Hostname: $hostname\n";
-    echo "Database: $database\n";
-    echo "Username: $username\n";
-    echo "Password: $password\n";
-    echo "Port: $port\n";
-
     // Crear la conexión a la base de datos con el puerto
     $mysqli = mysqli_connect($hostname, $username, $password, $database, $port);
 
