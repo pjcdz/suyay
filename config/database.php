@@ -8,7 +8,7 @@
 // $mysqli = mysqli_connect($hostname, $username, $password, $database); 
 
 // Obtener la URL de la base de datos desde la variable de entorno
-$database_url = getenv('RAILWAY_URL');
+$database_url = getenv('JAWSDB_URL');
 
 // Verificar si se pudo obtener la URL de la base de datos
 if ($database_url) {
