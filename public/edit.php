@@ -8,7 +8,7 @@ if(!isset($_SESSION['AdminLoginId'])) {
 require_once '../config/database.php';
 
 if(isset($_POST['update'])) {   
-    $dni = $_POST['dni'];
+    $dni = empty($_POST['dni']) ? 0 : $_POST['dni'];
     $nombre = $_POST['name'];
     $credito = $_POST['credito'];
     $deuda = $_POST['deuda'];
