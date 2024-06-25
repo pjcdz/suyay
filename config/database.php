@@ -21,15 +21,13 @@ if ($database_url) {
     $username = $url_parts['user'];
     $password = $url_parts['pass'];
     $port = $url_parts['port']; // Obtener el puerto de la URL
-
+    
     // Crear la conexión a la base de datos con el puerto
     $mysqli = mysqli_connect($hostname, $username, $password, $database, $port);
 
     // Verificar si la conexión fue exitosa
     if (!$mysqli) {
         die("Error al conectar a la base de datos: " . mysqli_connect_error());
-    } else {
-        echo "Conexión exitosa\n";
     }
 } else {
     // Manejar el caso en el que no se pudo obtener la URL de la base de datos desde las variables de entorno
