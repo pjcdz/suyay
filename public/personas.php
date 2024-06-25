@@ -96,13 +96,23 @@ if ($result->num_rows > 0) {
             </thead>
             <tbody>
                 <?php
+                    // Antes de imprimir los datos, ordena los consultorios y los días
+                    foreach ($personas as $dni => $persona) {
+                        ksort($personas[$dni]['ocupacion']); // Ordena los consultorios
+                        foreach ($personas[$dni]['ocupacion'] as $consultorio => $dias) {
+                            ksort($personas[$dni]['ocupacion'][$consultorio]); // Ordena los días
+                        }
+                    }
+                    $costoPorHora = 1500;
                     if (!empty($personas)) {
                         foreach ($personas as $dni => $persona) {
                             echo "<tr>";
                             echo "<td>" . htmlspecialchars($dni) . "</td>";
                             echo "<td>" . htmlspecialchars($persona['nombre']) . "</td>";
                             echo "<td>" . htmlspecialchars($persona['credito']) . "</td>";
-                            echo "<td>" . htmlspecialchars($persona['deuda']) . "</td>";
+                            // Calcular el número de horas y mostrarlo junto con la deuda
+                            $horas = $persona['deuda'] / $costoPorHora;
+                            echo "<td>" . htmlspecialchars($persona['deuda']) . "<br>(" . htmlspecialchars($horas) . ")</td>";
                             echo "<td>";
                             foreach ($persona['ocupacion'] as $consultorio => $dias) {
                                 echo "<strong>" . htmlspecialchars($consultorio) . ":</strong> ";
