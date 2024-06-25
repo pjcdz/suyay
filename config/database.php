@@ -8,7 +8,7 @@
 // $mysqli = mysqli_connect($hostname, $username, $password, $database); 
 
 // Obtener la URL de la base de datos desde la variable de entorno
-$database_url = getenv('JAWSDB_URL');
+$database_url = getenv('RAILWAY_URL');
 
 // Verificar si se pudo obtener la URL de la base de datos
 if ($database_url) {
@@ -20,17 +20,26 @@ if ($database_url) {
     $database = substr($url_parts['path'], 1);
     $username = $url_parts['user'];
     $password = $url_parts['pass'];
-    
-    // Crear la conexión a la base de datos
-    $mysqli = mysqli_connect($hostname, $username, $password, $database); 
-    
+    $port = $url_parts['port']; // Obtener el puerto de la URL
+
+    // Depuración: imprimir los valores obtenidos
+    echo "Hostname: $hostname\n";
+    echo "Database: $database\n";
+    echo "Username: $username\n";
+    echo "Password: $password\n";
+    echo "Port: $port\n";
+
+    // Crear la conexión a la base de datos con el puerto
+    $mysqli = mysqli_connect($hostname, $username, $password, $database, $port);
+
     // Verificar si la conexión fue exitosa
     if (!$mysqli) {
         die("Error al conectar a la base de datos: " . mysqli_connect_error());
+    } else {
+        echo "Conexión exitosa\n";
     }
 } else {
     // Manejar el caso en el que no se pudo obtener la URL de la base de datos desde las variables de entorno
     die("No se pudo obtener la URL de la base de datos desde las variables de entorno.");
 }
-
 ?>
