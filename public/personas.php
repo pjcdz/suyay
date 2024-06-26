@@ -96,11 +96,21 @@ if ($result->num_rows > 0) {
             </thead>
             <tbody>
                 <?php
+                    // Define el orden correcto de los días de la semana
+                    $diasOrdenados = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+
                     // Antes de imprimir los datos, ordena los consultorios y los días
                     foreach ($personas as $dni => $persona) {
                         ksort($personas[$dni]['ocupacion']); // Ordena los consultorios
                         foreach ($personas[$dni]['ocupacion'] as $consultorio => $dias) {
-                            ksort($personas[$dni]['ocupacion'][$consultorio]); // Ordena los días
+                            // Ordena los días según el orden definido en $diasOrdenados
+                            uksort($personas[$dni]['ocupacion'][$consultorio], function($a, $b) use ($diasOrdenados) {
+                                return array_search($a, $diasOrdenados) - array_search($b, $diasOrdenados);
+                            });
+                            // Ordena las horas en orden descendente
+                            foreach ($personas[$dni]['ocupacion'][$consultorio] as $dia => $horas) {
+                                rsort($personas[$dni]['ocupacion'][$consultorio][$dia]);
+                            }
                         }
                     }
                     $costoPorHora = 1500;
@@ -112,7 +122,7 @@ if ($result->num_rows > 0) {
                             echo "<td>" . htmlspecialchars($persona['credito']) . "</td>";
                             // Calcular el número de horas y mostrarlo junto con la deuda
                             $horas = $persona['deuda'] / $costoPorHora;
-                            echo "<td>" . htmlspecialchars($persona['deuda']) . "<br>(" . htmlspecialchars($horas) . ")</td>";
+                            echo "<td>" . htmlspecialchars($persona['deuda']) . "<br>(" . htmlspecialchars($horas) . "hs)</td>";
                             echo "<td>";
                             foreach ($persona['ocupacion'] as $consultorio => $dias) {
                                 echo "<strong>" . htmlspecialchars($consultorio) . ":</strong> ";
