@@ -107,12 +107,12 @@ if ($result->num_rows > 0) {
                             uksort($personas[$dni]['ocupacion'][$consultorio], function($a, $b) use ($diasOrdenados) {
                                 return array_search($a, $diasOrdenados) - array_search($b, $diasOrdenados);
                             });
-                            // Ordena las horas en orden descendente
+                            // Ordena las horas en orden ascendente
                             foreach ($personas[$dni]['ocupacion'][$consultorio] as $dia => $horas) {
                                 usort($personas[$dni]['ocupacion'][$consultorio][$dia], function($a, $b) {
                                     $aHora = explode(' - ', $a)[0];
                                     $bHora = explode(' - ', $b)[0];
-                                    return $bHora - $aHora;
+                                    return strcmp($aHora, $bHora);
                                 });
                             }
                         }
