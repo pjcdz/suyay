@@ -89,7 +89,7 @@ if ($result->num_rows > 0) {
                 <tr>
                     <th>DNI</th>
                     <th>Nombre</th>
-                    <th>Crédito</th>
+                    <th>Pagado</th>
                     <th>Deuda</th>
                     <th>Ocupación</th>
                 </tr>
@@ -109,7 +109,11 @@ if ($result->num_rows > 0) {
                             });
                             // Ordena las horas en orden descendente
                             foreach ($personas[$dni]['ocupacion'][$consultorio] as $dia => $horas) {
-                                rsort($personas[$dni]['ocupacion'][$consultorio][$dia]);
+                                usort($personas[$dni]['ocupacion'][$consultorio][$dia], function($a, $b) {
+                                    $aHora = explode(' - ', $a)[0];
+                                    $bHora = explode(' - ', $b)[0];
+                                    return $bHora - $aHora;
+                                });
                             }
                         }
                     }
