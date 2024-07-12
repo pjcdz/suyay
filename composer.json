@@ -1,5 +1,7 @@
 {
     "name": "public/suyay",
     "description": "A simple PHP app for Heroku",
-    "require": {}
+    "require": {
+        "php": "^8.2"
+    }
 }
