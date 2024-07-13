@@ -9,7 +9,7 @@ services:
       - ./src:/var/www/html
     image: 'nginx:alpine'
     ports:
-      - '8080:80'
+      - '3000:80'
     networks:
       - internal
   php:
