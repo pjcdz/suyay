@@ -10,17 +10,10 @@ services:
       - './public:/var/www/html'
     depends_on:
       - php
-    networks:
-      - n0c0gg0
     restart: unless-stopped
 
   php:
-    image: 'php:7.4-fpm'
+    image: 'php:8.4-rc-alpine'
     volumes:
       - './public:/var/www/html'
-    networks:
-      - n0c0gg0
     restart: unless-stopped
-
-networks:
-  n0c0gg0:
