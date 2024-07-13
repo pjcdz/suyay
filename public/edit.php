@@ -5,7 +5,7 @@ if(!isset($_SESSION['AdminLoginId'])) {
     header("Location: login");
 }
 
-require_once 'config/database.php';
+require_once '../config/database.php';
 
 if(isset($_POST['update'])) {   
     $dni = empty($_POST['dni']) ? 0 : $_POST['dni'];

@@ -1,5 +1,5 @@
 <?php
-require_once 'config/database.php';
+require_once '../config/database.php';
 
 function getCodConsultorio() {
     if(empty($_GET["codConsultorio"])){
