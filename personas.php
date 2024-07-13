@@ -5,7 +5,7 @@ if(!isset($_SESSION['AdminLoginId'])) {
     header("Location: login");
 }
 
-require_once '../config/database.php';
+require_once 'config/database.php';
 
 
 // Consulta SQL para obtener los datos de las personas y sus horas alquiladas junto con las descripciones
