@@ -1,17 +1,14 @@
-# Usa una imagen base que soporte Docker Compose
-FROM docker/compose:1.29.2
-
-# Copia tu código de la aplicación al contenedor
-COPY . /app
-
-# Define el directorio de trabajo
-WORKDIR /app
-
-# Instala cualquier dependencia específica si es necesario
-# RUN npm install
-
-# Expone los puertos necesarios
-EXPOSE 80
-
-# Comando por defecto para ejecutar tu aplicación
-CMD ["docker-compose", "up"]
+# Use the official PHP 8.0 Apache image from Docker Hub
+FROM php:8.0-apache
+# Enable Apache mod_rewrite
+RUN a2enmod rewrite
+# Copy the local src directory to the container's /var/www/html directory
+COPY src/ /var/www/html/
+# Copy the .htaccess file to the container's /var/www/html directory
+COPY src/.htaccess /var/www/html/
+# Copy the custom Apache configuration file to the container's Apache configuration directory
+COPY my-apache-config.conf /etc/apache2/sites-available/
+# Enable the custom Apache configuration
+RUN a2ensite my-apache-config
+# Change the ownership of the /var/www/html directory to www-data
+RUN chown -R www-data:www-data /var/www/html

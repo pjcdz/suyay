@@ -1,23 +1,10 @@
 version: '3.8'
-
 services:
-  nginx:
+  web:
     build:
       context: .
-      dockerfile: .docker/nginx/Dockerfile
+      dockerfile: Dockerfile
     volumes:
       - ./src:/var/www/html
-    image: 'nginx:alpine'
     ports:
       - '3000:80'
-    networks:
-      - internal
-  php:
-    image: 'php:fpm-alpine'
-    volumes:
-      - ./src:/var/www/html
-    networks:
-      - internal
-networks:
-  internal:
-    driver: bridge
