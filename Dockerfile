@@ -28,4 +28,4 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf &&\
 # Change the ownership of the /var/www/html directory to www-data
 RUN chown -R www-data:www-data /var/www/html
 # Expose the necessary ports
-EXPOSE 80
+EXPOSE 80 3000
