@@ -12,3 +12,5 @@ COPY my-apache-config.conf /etc/apache2/sites-available/
 RUN a2ensite my-apache-config
 # Change the ownership of the /var/www/html directory to www-data
 RUN chown -R www-data:www-data /var/www/html
+# Expone los puertos necesarios
+EXPOSE 80 3000
