@@ -5,6 +5,10 @@ RUN a2enmod rewrite
 
 RUN apt-get update && apt upgrade -y
 
+# Install and enable mysqli extension
+RUN docker-php-ext-install mysqli
+RUN docker-php-ext-enable mysqli
+
 ADD ./src /var/www/html
 # Set ServerName directive globally
 
