@@ -1,5 +1,5 @@
 # Use the official PHP 8.0 Apache image from Docker Hub
-FROM php:8.0-apache
+FROM php:8.2.12-apache-bookworm
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 

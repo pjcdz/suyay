@@ -27,6 +27,11 @@ if ($result->num_rows > 0) {
         $consultorio = $row['consultorio'];
         $hora = $row['hora'];
 
+        // Skip if $hora is null
+        if ($hora === null) {
+            continue;
+        }
+
         // Extraer el día y la hora
         $diaHora = explode(" ", $hora);
         $dia = $diaHora[0];

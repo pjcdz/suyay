@@ -32,6 +32,9 @@ if(isset($_POST['update'])) {
         $credito = 0; 
     }
     
+    // Initialize isPagado
+    $isPagado = 0;
+
     // Determine if paid
     if( $deuda != 0 ) {
         $isPagado = $credito < $deuda ? 0 : 1;
@@ -58,6 +61,15 @@ if(isset($_POST['update'])) {
             $result = mysqli_query($mysqli, "UPDATE personas SET nombre='$nombre', credito='$credito', deuda='$deuda' WHERE dni='$dni'");
         }
     } 
+
+    // Get updated credit and debt values
+    $result = mysqli_query($mysqli, "SELECT credito, deuda FROM personas WHERE dni='$dni'");
+    $row = mysqli_fetch_assoc($result);
+    $credito = $row['credito'];
+    $deuda = $row['deuda'];
+
+    // Determine if paid
+    $isPagado = $deuda != 0 ? ($credito < $deuda ? 0 : 1) : 0;
 
     //updating the table
     $result = mysqli_query($mysqli, "UPDATE horasalquiladas SET dni='$dni', isPagado='$isPagado', isOcupado='$isOcupado' WHERE codHora='$codHora' AND codConsultorio='$codConsultorio'");
