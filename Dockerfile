@@ -4,6 +4,8 @@ FROM php:8.0-apache
 RUN a2enmod rewrite
 # Install wget
 RUN apt-get update && apt-get install -y wget
+# Set ServerName directive globally
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Copy the local src directory to the container's /var/www/html directory
 COPY src/ /var/www/html/
 # Copy the .htaccess file to the container's /var/www/html directory
@@ -14,5 +16,5 @@ COPY my-apache-config.conf /etc/apache2/sites-available/
 RUN a2ensite my-apache-config
 # Change the ownership of the /var/www/html directory to www-data
 RUN chown -R www-data:www-data /var/www/html
-# Expone los puertos necesarios
+# Expose the necessary ports
 EXPOSE 80 3000
