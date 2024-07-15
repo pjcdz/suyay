@@ -2,6 +2,8 @@
 FROM php:8.0-apache
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
+# Install wget
+RUN apt-get update && apt-get install -y wget
 # Copy the local src directory to the container's /var/www/html directory
 COPY src/ /var/www/html/
 # Copy the .htaccess file to the container's /var/www/html directory
