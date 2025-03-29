@@ -7,7 +7,7 @@
       },
       "ports": [
         {
-          "published": 8080,
+          "published": 8081,
           "target": 80
         }
       ],
