@@ -1,0 +1,91 @@
+services:
+  db:
+    image: mysql:8.0 # Using MySQL 8.0 as indicated in the SQL dump
+    container_name: suyay_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword # Replace with a strong password
+      MYSQL_DATABASE: suyaydb # Database name
+      MYSQL_USER: suyayuser # Database user
+      MYSQL_PASSWORD: suyaypassword # Replace with a strong password
+      # Change to use mysql_native_password for Node.js compatibility
+      MYSQL_AUTHENTICATION_PLUGIN: mysql_native_password
+    ports:
+      # Expose port 3306 locally if needed for direct access (optional)
+      # Be cautious exposing DB ports directly in production
+      - "3306:3306"
+    volumes:
+      # Mount the initialization script
+      - ./db-init:/docker-entrypoint-initdb.d
+      # Mount a volume for data persistence
+      - mysql_data:/var/lib/mysql
+    # Change the default authentication plugin to mysql_native_password
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u$$MYSQL_USER", "-p$$MYSQL_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s # Give DB time to initialize
+    networks:
+      - suyay_network
+
+  backend:
+    # We will build this from a Dockerfile later
+    build: ./backend
+    container_name: suyay_backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001" # Expose API port
+    environment:
+      DB_HOST: db
+      DB_USER: suyayuser
+      DB_PASSWORD: suyaypassword
+      DB_NAME: suyaydb
+      JWT_SECRET: your_very_secret_key_change_this # Replace with a strong secret
+    volumes:
+      # Mount backend code for hot-reloading
+      - ./backend:/app
+      # Avoid mounting node_modules from host
+      - /app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy # Wait for DB healthcheck to pass
+    networks:
+      - suyay_network
+    # Command to run (will be defined in backend Dockerfile/package.json)
+    # Agregamos un retraso de 15 segundos para asegurar que la DB esté completamente inicializada
+    command: >
+      sh -c "
+        echo 'Esperando 15 segundos para asegurar que la base de datos esté completamente inicializada...' &&
+        sleep 15 &&
+        echo 'Iniciando el backend...' &&
+        npm run dev
+      "
+
+  frontend:
+    # We will build this from a Dockerfile later
+    build: ./frontend
+    container_name: suyay_frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173" # Expose Vite default port
+    volumes:
+      # Mount frontend code for hot-reloading
+      - ./frontend:/app
+      # Avoid mounting node_modules from host - This ensures node_modules installed during build are used
+      # - /app/node_modules 
+    depends_on:
+      - backend # Frontend might need the backend running
+    networks:
+      - suyay_network
+    # Command to run (will be defined in frontend Dockerfile/package.json)
+    command: npm run dev # Dockerfile CMD adds --host
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  suyay_network:
+    driver: bridge
