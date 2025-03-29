@@ -274,3 +274,38 @@ html, body {
     padding: var(--space-xs) var(--space-sm);
   }
 }
+
+/* ===== LAPTOP & MEDIUM SCREENS OPTIMIZATION ===== */
+@media (min-width: 768px) and (max-width: 1600px) {
+  html {
+    /* Apply stronger scaling factor for everything to make the UI more compact */
+    font-size: 12px; /* Reduce base font size further to 12px */
+  }
+  
+  #contenedor-principal {
+    max-width: 630px; /* Reduced by 30% from 900px */
+    margin: var(--space-sm) auto; /* Further reduce top/bottom margin */
+  }
+  
+  #contenedor-principal table {
+    font-size: 0.8rem; /* Reduced table text size to match index */
+  }
+  
+  #contenedor-principal h1 {
+    font-size: 1.5rem; /* Smaller heading to match index */
+    margin: var(--space-xs) 0; /* Further reduce heading margin */
+  }
+  
+  /* Adjust table cell padding for better fit */
+  #contenedor-principal table th,
+  #contenedor-principal table td {
+    padding: calc(var(--space-sm) * 0.7); /* Further reduce padding */
+    font-size: 0.8rem; /* Ensure consistent font size in table cells */
+  }
+  
+  #contenedor-principal button {
+    padding: calc(var(--space-xs) * 1.2) var(--space-sm);
+    font-size: 0.8rem; /* Smaller button text */
+    height: 32px; /* Match button height with index */
+  }
+}

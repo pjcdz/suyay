@@ -285,3 +285,64 @@ body {
 .modal-footer #cancelar:active, .modal-footer #guardar:active {
   transform: translateY(0);
 }
+
+/* iOS/Mobile scroll optimization */
+@media (max-width: 767px) {
+  /* Mobile-specific adjustments */
+}
+
+/* ===== LAPTOP & MEDIUM SCREENS OPTIMIZATION ===== */
+@media (min-width: 768px) and (max-width: 1600px) {
+  html {
+    /* Apply stronger scaling factor for everything to make the UI more compact */
+    font-size: 12px; /* Reduce base font size further to 12px */
+  }
+  
+  #contenedor-principal {
+    max-width: 840px; /* Even smaller container width */
+    margin: var(--space-xs) auto; /* Further reduce top/bottom margin */
+  }
+  
+  .modal-content {
+    width: 320px; /* Smaller modal width */
+  }
+  
+  .modal-header h2 {
+    font-size: 1.5rem; /* Smaller heading */
+  }
+  
+  input[type="text"],
+  input[type="password"],
+  input[type="number"],
+  select,
+  textarea {
+    padding: calc(var(--space-xs) * 1.5); /* Further reduced padding */
+    height: 35px; /* Smaller height */
+    font-size: 0.85rem; /* Smaller font */
+  }
+  
+  button {
+    padding: calc(var(--space-xs) * 1.5) var(--space-sm); /* Further reduced padding */
+    height: 35px; /* Smaller height */
+    font-size: 0.85rem; /* Smaller font */
+  }
+  
+  .modal-body {
+    padding: var(--space-md); /* Reduced padding */
+  }
+  
+  .modal-footer #cancelar, 
+  .modal-footer #guardar {
+    padding: calc(var(--space-xs) * 1.5);
+    height: 35px;
+    font-size: 0.85rem;
+  }
+  
+  h1, h2 {
+    margin-bottom: var(--space-sm); /* Further reduced margin */
+  }
+  
+  .form-group {
+    margin-bottom: var(--space-sm); /* Further reduced margin */
+  }
+}

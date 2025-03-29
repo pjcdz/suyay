@@ -468,3 +468,48 @@ button:active {
     grid-template-rows: minmax(44px, auto);
   }
 }
+
+/* ===== LAPTOP & MEDIUM SCREENS OPTIMIZATION ===== */
+@media (min-width: 768px) and (max-width: 1600px) {
+  html {
+    /* Apply stronger scaling factor for everything to make the UI more compact */
+    font-size: 12px; /* Reduce base font size further to 12px */
+  }
+  
+  #contenedor-principal {
+    max-width: 590px; /* Reduced by 30% from 840px */
+    margin: var(--space-xs) auto; /* Further reduce top/bottom margin */
+    min-height: 82vh; /* Smaller container height */
+    padding: var(--space-sm); /* Reduced padding */
+  }
+  
+  .hora {
+    grid-template-columns: 50px repeat(6, 1fr); /* Smaller first column */
+  }
+  
+  .dia {
+    height: 38px; /* Smaller height for day cells */
+    padding: calc(var(--space-md) * 0.7); /* Further reduced padding */
+  }
+  
+  .tiempo {
+    padding: calc(var(--space-sm) * 0.7); /* Further reduced padding */
+    font-size: 0.85rem; /* Smaller font */
+  }
+  
+  #selector-consultorio {
+    margin-bottom: var(--space-md); /* Reduced margin */
+    padding: calc(var(--space-sm) * 0.8); /* Reduced padding */
+  }
+  
+  #consultorioSelect {
+    padding: calc(var(--space-xs) * 1.3) var(--space-sm);
+    font-size: 0.85rem;
+  }
+  
+  button {
+    padding: calc(var(--space-xs) * 1.3) var(--space-sm);
+    font-size: 0.85rem;
+    height: 32px;
+  }
+}
