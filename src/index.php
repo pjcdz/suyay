@@ -81,11 +81,10 @@ $codHoras = ["codHoras0809", "codHoras0910", "codHoras1011", "codHoras1112", "co
     <div id="contenedor-principal">
         <div id="selector-consultorio">
         <select id="consultorioSelect" onchange="window.location.href=this.value;">
-                <option value="index?codConsultorio=<?php echo $codConsultorio; ?>">Consultorio seleccionado: <?php echo $codConsultorio; ?></option>
-                <option value="index?codConsultorio=1">Consultorio 1</option>
-                <option value="index?codConsultorio=2">Consultorio 2</option>
-                <option value="index?codConsultorio=3">Consultorio 3</option>
-                <option value="index?codConsultorio=4">Consultorio 4</option>
+                <option value="index?codConsultorio=1" <?php if($codConsultorio == 1) echo 'selected'; ?>>Consultorio 1</option>
+                <option value="index?codConsultorio=2" <?php if($codConsultorio == 2) echo 'selected'; ?>>Consultorio 2</option>
+                <option value="index?codConsultorio=3" <?php if($codConsultorio == 3) echo 'selected'; ?>>Consultorio 3</option>
+                <option value="index?codConsultorio=4" <?php if($codConsultorio == 4) echo 'selected'; ?>>Consultorio 4</option>
                 <!-- <option value="index?codConsultorio=5">Consultorio 5</option>
                 <option value="index?codConsultorio=6">Consultorio 6</option> -->
             </select>

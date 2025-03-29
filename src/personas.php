@@ -134,7 +134,7 @@ if ($result->num_rows > 0) {
                             echo "<td>" . htmlspecialchars($persona['deuda']) . "<br>(" . htmlspecialchars($horas) . "hs)</td>";
                             echo "<td>";
                             foreach ($persona['ocupacion'] as $consultorio => $dias) {
-                                echo "<strong>" . htmlspecialchars($consultorio) . ":</strong> ";
+                                echo "<strong>" . htmlspecialchars($consultorio) . ":</strong><br>";
                                 foreach ($dias as $dia => $horas) {
                                     echo "<strong>" . htmlspecialchars($dia)  . ":</strong><br>";
                                     echo implode("<br>", array_map('htmlspecialchars', $horas));
