@@ -1,16 +1,8 @@
 <?php
 
-// $hostname = '';
-// $database = 'suyay';
-// $username = 'root';
-// $password = '';
-
-// $mysqli = mysqli_connect($hostname, $username, $password, $database); 
-
-// Obtener la URL de la base de datos desde la variable de entorno
+// Primero intenta obtener la conexión desde DB_URL (como está configurado actualmente)
 $database_url = getenv('DB_URL');
 
-// Verificar si se pudo obtener la URL de la base de datos
 if ($database_url) {
     // Parsear la URL de la base de datos
     $url_parts = parse_url($database_url);
@@ -24,13 +16,20 @@ if ($database_url) {
     
     // Crear la conexión a la base de datos con el puerto
     $mysqli = mysqli_connect($hostname, $username, $password, $database, $port);
-
-    // Verificar si la conexión fue exitosa
-    if (!$mysqli) {
-        die("Error al conectar a la base de datos: " . mysqli_connect_error());
-    }
 } else {
-    // Manejar el caso en el que no se pudo obtener la URL de la base de datos desde las variables de entorno
-    die("No se pudo obtener la URL de la base de datos desde las variables de entorno.");
+    // Alternativa: usar variables de entorno individuales (útil en Coolify)
+    $hostname = getenv('DB_HOST') ?: 'db';
+    $port = getenv('DB_PORT') ?: '3306';
+    $database = getenv('DB_NAME') ?: 'suyay_db';
+    $username = getenv('DB_USER') ?: 'root';
+    $password = getenv('DB_PASSWORD') ?: 'suyay_password';
+    
+    // Crear la conexión a la base de datos con las variables individuales
+    $mysqli = mysqli_connect($hostname, $username, $password, $database, $port);
+}
+
+// Verificar si la conexión fue exitosa
+if (!$mysqli) {
+    die("Error al conectar a la base de datos: " . mysqli_connect_error());
 }
 ?>

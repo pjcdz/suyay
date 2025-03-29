@@ -9,9 +9,10 @@ RUN apt-get update && apt upgrade -y
 RUN docker-php-ext-install mysqli
 RUN docker-php-ext-enable mysqli
 
-ADD ./src /var/www/html
-# Set ServerName directive globally
+# No copy source here - will use volume mount instead
+# ADD ./src /var/www/html
 
+# Set ServerName directive globally
 # Copy the .htaccess file to the container's /var/www/html directory
 COPY src/.htaccess /var/www/html/
 # Copy the custom Apache configuration file to the container's Apache configuration directory
@@ -20,7 +21,6 @@ COPY my-apache-config.conf /etc/apache2/sites-available/
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf &&\
     a2enmod rewrite &&\
     a2enmod headers &&\
-    a2enmod rewrite &&\
     a2dissite 000-default &&\
     a2ensite my-apache-config &&\
     service apache2 restart
@@ -28,4 +28,8 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf &&\
 # Change the ownership of the /var/www/html directory to www-data
 RUN chown -R www-data:www-data /var/www/html
 # Expose the necessary ports
-EXPOSE 80 3000
+EXPOSE 80
+
+# Healthcheck para que Coolify pueda monitorear el estado del contenedor
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD curl -f http://localhost/ || exit 1

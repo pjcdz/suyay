@@ -1,0 +1,61 @@
+{
+  "version": "1.0.0",
+  "services": {
+    "web": {
+      "dockerfile": {
+        "path": "Dockerfile"
+      },
+      "ports": [
+        {
+          "published": 80,
+          "target": 80
+        }
+      ],
+      "environment": [
+        {
+          "name": "DB_URL",
+          "value": "mysql://root:suyay_password@db:3306/suyay_db"
+        }
+      ],
+      "volumes": [
+        {
+          "source": "./src",
+          "target": "/var/www/html",
+          "type": "bind"
+        }
+      ]
+    },
+    "db": {
+      "image": "mysql:8.0",
+      "environment": [
+        {
+          "name": "MYSQL_ROOT_PASSWORD",
+          "value": "suyay_password",
+          "secret": true
+        },
+        {
+          "name": "MYSQL_DATABASE", 
+          "value": "suyay_db"
+        }
+      ],
+      "ports": [
+        {
+          "published": 3306,
+          "target": 3306
+        }
+      ],
+      "volumes": [
+        {
+          "source": "./suyayheroku1.sql",
+          "target": "/docker-entrypoint-initdb.d/suyayheroku1.sql",
+          "type": "bind"
+        },
+        {
+          "source": "mysql_data",
+          "target": "/var/lib/mysql",
+          "type": "volume"
+        }
+      ]
+    }
+  }
+}
