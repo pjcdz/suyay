@@ -69,7 +69,6 @@ if ($result->num_rows > 0) {
     <link rel="icon" href="/css/suyay.png" type="image/icon type">
     <link rel="stylesheet" href="/css/personas.css">
     <script src="/js/edit.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <!-- Imagen que se mostrará cuando se comparta la página -->
     <meta property="og:image" content="/css/suyayIcon.png">
@@ -85,10 +84,8 @@ if ($result->num_rows > 0) {
     <meta property="og:type" content="website">
 </head>
 <body>
-    <div id="particles-js"></div>
     <div id="contenedor-principal">
         <button onclick="window.location.href='admin'">Ir a Consultorios</button>
-        <h1>Lista de Personas</h1>
         <table border="1">
             <thead>
                 <tr>

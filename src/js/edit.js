@@ -1,90 +1,3 @@
-particlesJS('particles-js', {
-  particles: {
-    number: { 
-      value: 80,
-      density: {
-        enable: true,
-        value_area: 800
-      }
-    },
-    color: { value: '#7C5DFA' },
-    shape: { 
-      type: 'circle',
-      stroke: {
-        width: 0,
-        color: '#000000'
-      }
-    },
-    opacity: {
-      value: 0.5,
-      random: true,
-      anim: {
-        enable: true,
-        speed: 1,
-        opacity_min: 0.1,
-        sync: false
-      }
-    },
-    size: {
-      value: 3,
-      random: true,
-      anim: {
-        enable: true,
-        speed: 2,
-        size_min: 0.3,
-        sync: false
-      }
-    },
-    line_linked: {
-      enable: true,
-      distance: 150,
-      color: '#9277FF',
-      opacity: 0.2,
-      width: 1
-    },
-    move: {
-      enable: true,
-      speed: 1,
-      direction: 'none',
-      random: true,
-      straight: false,
-      out_mode: 'out',
-      bounce: false,
-      attract: {
-        enable: false,
-        rotateX: 600,
-        rotateY: 1200
-      }
-    }
-  },
-  interactivity: {
-    detect_on: 'canvas',
-    events: {
-      onhover: {
-        enable: true,
-        mode: 'grab'
-      },
-      onclick: {
-        enable: true,
-        mode: 'push'
-      },
-      resize: true
-    },
-    modes: {
-      grab: {
-        distance: 140,
-        line_linked: {
-          opacity: 0.4
-        }
-      },
-      push: {
-        particles_nb: 4
-      }
-    }
-  },
-  retina_detect: true
-});
-
 function isInputNumber(evt){
     var ch = String.fromCharCode(evt.which);
     
@@ -106,15 +19,48 @@ setVhProperty();
 
 // Run the function on resize
 window.addEventListener('resize', () => {
-  setVhProperty();
+  // Delay the execution to ensure we get the final size after iOS UI elements appear/disappear
+  setTimeout(setVhProperty, 100);
 });
 
 // Run the function on orientation change
 window.addEventListener('orientationchange', () => {
   // Add a small delay to ensure the browser has fully updated the viewport size
-  setTimeout(() => {
-    setVhProperty();
-  }, 100);
+  setTimeout(setVhProperty, 200);
+});
+
+// Fix for 100vh issue in iOS by monitoring scroll position
+let lastScrollPosition = 0;
+window.addEventListener('scroll', () => {
+  const currentScrollPosition = window.scrollY;
+  
+  // If user is scrolling down and past a threshold
+  if (currentScrollPosition > lastScrollPosition && currentScrollPosition > 50) {
+    // iOS may be showing/hiding address bar, readjust the height
+    setTimeout(setVhProperty, 100);
+  }
+  
+  lastScrollPosition = currentScrollPosition;
+});
+
+// Handle iOS keyboard appearance
+document.addEventListener('focusin', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+    // When keyboard appears, allow the natural scroll behavior
+    document.body.classList.add('keyboard-open');
+    // Scroll to the input element to ensure it's visible
+    setTimeout(() => {
+      e.target.scrollIntoView({behavior: 'smooth', block: 'center'});
+    }, 300);
+  }
+});
+
+document.addEventListener('focusout', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+    // When keyboard disappears, restore the fixed height
+    document.body.classList.remove('keyboard-open');
+    setTimeout(setVhProperty, 100);
+  }
 });
 
 window.onload = function() {
@@ -137,4 +83,13 @@ window.onload = function() {
     
     // Set viewport height again after page is fully loaded
     setVhProperty();
+    
+    // Apply iOS specific adjustments
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+        document.body.classList.add('ios-device');
+        
+        // Fix for iOS event delegation issues with focusable elements
+        document.addEventListener('touchstart', function(){}, {passive: true});
+    }
 }

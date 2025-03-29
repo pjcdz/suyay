@@ -70,6 +70,11 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* iOS specific variables */
+  --ios-bottom-safe-area: env(safe-area-inset-bottom, 0px);
+  --ios-top-safe-area: env(safe-area-inset-top, 0px);
+  --vh: 1vh;
 }
 
 /* Improved scrollbar styling */
@@ -98,6 +103,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  overflow-y: hidden;
 }
 
 html, body {
@@ -111,15 +117,6 @@ html, body {
   background-color: var(--color-background);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-/* ===== PARTICLES BACKGROUND ===== */
-#particles-js {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  opacity: 0.7;
 }
 
 /* ===== LAYOUT ===== */
@@ -199,8 +196,11 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  -webkit-appearance: none;
+  -webkit-appearance: none; /* Eliminar estilo por defecto en iOS */
   appearance: none;
+  -webkit-border-radius: var(--border-radius-md); /* Asegurar bordes redondeados en iOS */
+  border-radius: var(--border-radius-md);
+  background-image: none; /* Evitar gradientes automáticos en iOS */
 }
 
 button:hover {
@@ -310,7 +310,161 @@ button:active {
 
 /* Hover states for occupied slots */
 .dia-ocupado1:hover, .dia-ocupado2:hover, 
-.dia-ocupado3:hover, .dia-ocupado4:hover, 
+.dia-ocupado3:hover, .dia-ocupado4:hover,
 .dia-ocupado5:hover {
   filter: brightness(0.95);
+}
+
+/* ===== RESPONSIVE STYLES ===== */
+@media (max-width: 767px) {
+  html {
+    overflow: hidden; /* Prevent all scrolling on html */
+  }
+  
+  html, body {
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow-y: auto; /* Changed to allow scrolling */
+    height: 100%; /* Ensure body takes full height */
+    width: 100%;
+    position: relative; /* Changed from fixed to allow proper scrolling */
+    -webkit-overflow-scrolling: touch; /* Ensure smooth scrolling on iOS */
+  }
+
+  #contenedor-principal {
+    max-width: 100%; /* Allow container to fill width */
+    margin: var(--space-sm) auto; /* Reduce margin */
+    padding: var(--space-xs) var(--space-xs) calc(var(--space-xs) + var(--ios-bottom-safe-area)); /* Add iOS safe area to bottom padding */
+    height: calc(100% - var(--ios-bottom-safe-area) - var(--ios-top-safe-area) - var(--space-lg)); /* Account for safe areas */
+    overflow-y: auto; /* Allow internal scrolling if content overflows vertically */
+    -webkit-overflow-scrolling: touch;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on iOS */
+  }
+
+  #selector-consultorio {
+    flex-direction: row; 
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm);
+    margin-bottom: var(--space-md);
+    gap: var(--space-sm);
+    position: sticky; /* Make the selector stick to top on scroll */
+    top: 0;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.95); /* More solid background */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+  }
+
+  #consultorioSelect {
+    flex-grow: 1;
+    max-width: none;
+    font-size: var(--font-size-sm);
+    padding: var(--space-xs) var(--space-sm);
+    padding-right: 30px;
+    background-size: 14px;
+    background-position: right 8px center;
+    -webkit-appearance: none; /* Fix appearance on iOS */
+    appearance: none;
+    margin-top: -7px;
+  }
+
+  button {
+    font-size: var(--font-size-sm);
+    padding: var(--space-xs) var(--space-sm);
+    flex-shrink: 0;
+    -webkit-appearance: none; /* Fix appearance on iOS */
+    appearance: none;
+    touch-action: manipulation; /* Optimize for touch */
+    margin-top: -7px;
+  }
+
+  #calendario {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .hora {
+    grid-template-columns: 40px repeat(6, 1fr);
+    min-width: 360px;
+  }
+
+  .tiempo {
+    padding: 2px;
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  .dia {
+    padding: 4px;
+    font-size: 10px;
+    touch-action: manipulation; /* Optimize for touch */
+  }
+  
+  .unpaid-marker {
+    font-size: 1em;
+  }
+}
+
+/* iOS specific styles */
+.ios-device {
+  /* Prevent elastic scrolling/bounce effect on iOS */
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.ios-device #contenedor-principal {
+  /* Allow scrolling inside the container instead of body */
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(var(--space-md) + var(--ios-bottom-safe-area));
+  margin-bottom: 0;
+}
+
+.ios-device.keyboard-open {
+  /* When keyboard is visible, allow content to scroll naturally */
+  position: relative;
+  overflow: auto;
+}
+
+.ios-device #calendario {
+  /* Improve touch interaction on iOS */
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ios-device .dia {
+  /* Make touch targets bigger on iOS */
+  min-height: 44px;
+}
+
+/* Adjust for iPhone notch and home indicator areas */
+@supports (padding: max(0px)) {
+  .ios-device #contenedor-principal {
+    padding-left: max(var(--space-md), env(safe-area-inset-left));
+    padding-right: max(var(--space-md), env(safe-area-inset-right));
+    padding-bottom: max(var(--space-md), env(safe-area-inset-bottom));
+  }
+  
+  .ios-device #selector-consultorio {
+    padding-top: max(var(--space-md), env(safe-area-inset-top));
+  }
+}
+
+/* Use the custom vh variable for height calculations on iOS */
+@media (max-width: 767px) {
+  .ios-device #contenedor-principal {
+    height: calc(100 * var(--vh) - var(--space-lg));
+  }
+  
+  .ios-device .hora {
+    /* Ensure consistent row sizing */
+    grid-template-rows: minmax(44px, auto);
+  }
 }
