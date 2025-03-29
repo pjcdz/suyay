@@ -14,7 +14,7 @@
       "environment": [
         {
           "name": "DB_URL",
-          "value": "mysql://root:suyay_password@db:3306/suyay_db"
+          "value": "mysql://root:suyay_password@db:3309/suyay_db"
         }
       ],
       "volumes": [
@@ -40,7 +40,7 @@
       ],
       "ports": [
         {
-          "published": 3306,
+          "published": 3309,
           "target": 3306
         }
       ],

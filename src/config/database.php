@@ -19,7 +19,7 @@ if ($database_url) {
 } else {
     // Alternativa: usar variables de entorno individuales (útil en Coolify)
     $hostname = getenv('DB_HOST') ?: 'db';
-    $port = getenv('DB_PORT') ?: '3306';
+    $port = getenv('DB_PORT') ?: '3309';
     $database = getenv('DB_NAME') ?: 'suyay_db';
     $username = getenv('DB_USER') ?: 'root';
     $password = getenv('DB_PASSWORD') ?: 'suyay_password';
