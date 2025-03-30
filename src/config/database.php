@@ -12,23 +12,20 @@ if ($database_url) {
     $database = substr($url_parts['path'], 1);
     $username = $url_parts['user'];
     $password = $url_parts['pass'];
+    $port = $url_parts['port']; // Obtener el puerto de la URL
     
-    // En el entorno Docker, se debe usar el puerto interno del contenedor (3306)
-    // No el puerto mapeado en el host (3309)
-    // Si el puerto está en la URL, se ignora y se usa el puerto predeterminado de MySQL
-    
-    // Crear la conexión a la base de datos sin especificar el puerto (usará el predeterminado 3306)
-    $mysqli = mysqli_connect($hostname, $username, $password, $database);
+    // Crear la conexión a la base de datos con el puerto
+    $mysqli = mysqli_connect($hostname, $username, $password, $database, $port);
 } else {
     // Alternativa: usar variables de entorno individuales (útil en Coolify)
     $hostname = getenv('DB_HOST') ?: 'db';
-    // Usar el puerto interno 3306 para comunicación dentro de Docker, no 3309
+    $port = getenv('DB_PORT') ?: '3309';
     $database = getenv('DB_NAME') ?: 'suyay_db';
     $username = getenv('DB_USER') ?: 'root';
     $password = getenv('DB_PASSWORD') ?: 'suyay_password';
     
-    // Crear la conexión a la base de datos sin especificar el puerto
-    $mysqli = mysqli_connect($hostname, $username, $password, $database);
+    // Crear la conexión a la base de datos con las variables individuales
+    $mysqli = mysqli_connect($hostname, $username, $password, $database, $port);
 }
 
 // Verificar si la conexión fue exitosa
