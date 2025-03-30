@@ -9,10 +9,10 @@ RUN apt-get update && apt upgrade -y
 RUN docker-php-ext-install mysqli
 RUN docker-php-ext-enable mysqli
 
-# No copy source here - will use volume mount instead
-# ADD ./src /var/www/html
+# Crear directorio web y copiar archivos (esto permite tener los archivos incluso si el volumen no se monta correctamente)
+RUN mkdir -p /var/www/html
+COPY src/ /var/www/html/
 
-# Set ServerName directive globally
 # Copy the .htaccess file to the container's /var/www/html directory
 COPY src/.htaccess /var/www/html/
 # Copy the custom Apache configuration file to the container's Apache configuration directory
@@ -26,9 +26,9 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf &&\
     service apache2 restart
 
 # Fix permissions to ensure Apache can access all files
-RUN mkdir -p /var/www/html &&\
-    chown -R www-data:www-data /var/www/html &&\
-    chmod -R 755 /var/www/html
+RUN chown -R www-data:www-data /var/www/html &&\
+    chmod -R 755 /var/www/html &&\
+    find /var/www/html -type f -exec chmod 644 {} \;
 
 # Configurar shell script para ajustar permisos al inicio del contenedor
 COPY <<-"EOF" /docker-entrypoint-custom.sh
@@ -38,6 +38,12 @@ set -e
 chown -R www-data:www-data /var/www/html
 chmod -R 755 /var/www/html
 find /var/www/html -type f -exec chmod 644 {} \;
+
+# Verificar si index.php existe, caso contrario crear un archivo de redirección
+if [ ! -f /var/www/html/index.php ]; then
+  echo "<?php header('Location: /index.php'); ?>" > /var/www/html/index.php
+  echo "Error: index.php no encontrado. Se ha creado un archivo de redirección." >> /var/log/apache2/error.log
+fi
 
 # Ejecutar Apache en primer plano
 exec apache2-foreground

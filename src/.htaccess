@@ -1,16 +1,15 @@
 RewriteEngine On
 
+# Establecer index.php como archivo predeterminado
+DirectoryIndex index.php
+
+# Deshabilitar explícitamente el listado de directorios
+Options -Indexes
+
+# Redirigir explícitamente la raíz al index.php
+RewriteRule ^$ index.php [L]
+
 # Redirigir las solicitudes a archivos .php sin la extensión
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^(.*)$ $1.php [L]
-
-# Permitir acceso a todos desde cualquier origen
-<Directory "/var/www/html">
-    Require all granted
-    Options -Indexes +FollowSymLinks
-    AllowOverride All
-</Directory>
-
-# Establecer índice predeterminado
-DirectoryIndex index.php index.html
