@@ -1,8 +1,14 @@
-# Establecer index.php como documento por defecto
+# Establecer index.php como archivo predeterminado
 DirectoryIndex index.php
 
 # Deshabilitar listado de directorios
 Options -Indexes
 
-# Desactivar completamente el motor de reescritura para evitar cualquier redirección
-# RewriteEngine Off
+# Habilitar el motor de reescritura solo para URLs amigables
+RewriteEngine On
+
+# Regla simple para URLs amigables (sin usar redirecciones adicionales)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([^/]+)/?$ $1.php [QSA,L]
