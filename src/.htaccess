@@ -6,14 +6,10 @@ DirectoryIndex index.php
 # Deshabilitar explícitamente el listado de directorios
 Options -Indexes
 
-# No redirigir si el archivo ya es index.php
-RewriteCond %{THE_REQUEST} !\ /index\.php
-# Redirigir explícitamente la raíz al index.php solo si no es una solicitud directa a index.php
+# Redirigir explícitamente la raíz al index.php
 RewriteRule ^$ index.php [L]
 
 # Redirigir las solicitudes a archivos .php sin la extensión
-# Solo si no es un archivo o directorio real
-RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^([^/]+)/?$ $1.php [L]
+RewriteRule ^(.*)$ $1.php [L]

@@ -9,7 +9,7 @@ RUN apt-get update && apt upgrade -y
 RUN docker-php-ext-install mysqli
 RUN docker-php-ext-enable mysqli
 
-# Crear directorio web y copiar archivos
+# Crear directorio web y copiar archivos (esto permite tener los archivos incluso si el volumen no se monta correctamente)
 RUN mkdir -p /var/www/html
 COPY src/ /var/www/html/
 
@@ -39,8 +39,11 @@ chown -R www-data:www-data /var/www/html
 chmod -R 755 /var/www/html
 find /var/www/html -type f -exec chmod 644 {} \;
 
-# No crear archivos de redirección adicionales para evitar bucles
-echo "Verificando configuración para evitar bucles de redirección..."
+# Verificar si index.php existe, caso contrario crear un archivo de redirección
+if [ ! -f /var/www/html/index.php ]; then
+  echo "<?php header('Location: /index.php'); ?>" > /var/www/html/index.php
+  echo "Error: index.php no encontrado. Se ha creado un archivo de redirección." >> /var/log/apache2/error.log
+fi
 
 # Ejecutar Apache en primer plano
 exec apache2-foreground
