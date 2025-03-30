@@ -1,14 +1,19 @@
+RewriteEngine On
+
 # Establecer index.php como archivo predeterminado
 DirectoryIndex index.php
 
-# Deshabilitar listado de directorios
+# Deshabilitar explícitamente el listado de directorios
 Options -Indexes
 
-# Habilitar el motor de reescritura solo para URLs amigables
-RewriteEngine On
+# No redirigir si el archivo ya es index.php
+RewriteCond %{THE_REQUEST} !\ /index\.php
+# Redirigir explícitamente la raíz al index.php solo si no es una solicitud directa a index.php
+RewriteRule ^$ index.php [L]
 
-# Regla simple para URLs amigables (sin usar redirecciones adicionales)
+# Redirigir las solicitudes a archivos .php sin la extensión
+# Solo si no es un archivo o directorio real
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^([^/]+)/?$ $1.php [QSA,L]
+RewriteRule ^([^/]+)/?$ $1.php [L]
