@@ -2,11 +2,11 @@
 require_once 'config/database.php';
 
 function getCodConsultorio() {
-    if(empty($_GET["codConsultorio"])){
+    if (empty($_GET["codConsultorio"]) || !is_numeric($_GET["codConsultorio"])) {
         $value = 1;
     } else {
-        $value = $_GET['codConsultorio'];
-    } 
+        $value = (int)$_GET['codConsultorio'];
+    }
     return $value;
 }
 
