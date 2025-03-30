@@ -4,11 +4,11 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:80"
+      - "8081:80"
     depends_on:
       - db
     environment:
-      - DB_URL=mysql://root:suyay_password@db:3309/suyay_db
+      - DB_URL=mysql://root:suyay_password@db:3306/suyay_db
     volumes:
       - ./src:/var/www/html
     networks:
