@@ -25,32 +25,11 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf &&\
     a2ensite my-apache-config &&\
     service apache2 restart
 
-# Fix permissions to ensure Apache can access all files
-RUN mkdir -p /var/www/html &&\
-    chown -R www-data:www-data /var/www/html &&\
-    chmod -R 755 /var/www/html
-
-# Configurar shell script para ajustar permisos al inicio del contenedor
-COPY <<-"EOF" /docker-entrypoint-custom.sh
-#!/bin/bash
-set -e
-# Aplicar permisos adecuados a los archivos montados
-chown -R www-data:www-data /var/www/html
-chmod -R 755 /var/www/html
-find /var/www/html -type f -exec chmod 644 {} \;
-
-# Ejecutar Apache en primer plano
-exec apache2-foreground
-EOF
-
-RUN chmod +x /docker-entrypoint-custom.sh
-
+# Change the ownership of the /var/www/html directory to www-data
+RUN chown -R www-data:www-data /var/www/html
 # Expose the necessary ports
 EXPOSE 80
 
 # Healthcheck para que Coolify pueda monitorear el estado del contenedor
 HEALTHCHECK --interval=30s --timeout=3s \
   CMD curl -f http://localhost/ || exit 1
-
-# Usar el script personalizado como punto de entrada
-ENTRYPOINT ["/docker-entrypoint-custom.sh"]
