@@ -6,26 +6,37 @@ RUN apt-get update && apt-get install -y \
     nginx \
     vim \
     curl \
+    procps \
+    net-tools \
+    iputils-ping \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install and enable mysqli extension
-RUN docker-php-ext-install mysqli
-RUN docker-php-ext-enable mysqli
+# Install and enable mysqli extension and other PHP extensions
+RUN docker-php-ext-install mysqli pdo pdo_mysql && \
+    docker-php-ext-enable mysqli
+
+# Create directories
+RUN mkdir -p /var/log/nginx && \
+    mkdir -p /var/www/html
+
+# Set up PHP configuration
+RUN echo "display_errors = On" >> /usr/local/etc/php/conf.d/error-reporting.ini && \
+    echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/error-reporting.ini
 
 # Copy Nginx configuration
 COPY nginx-site.conf /etc/nginx/conf.d/default.conf
 
-# Create web directory
-RUN mkdir -p /var/www/html
+# Remove default nginx configuration
+RUN rm -f /etc/nginx/sites-enabled/default
 
 # Copy PHP files
 COPY ./src /var/www/html/
 
 # Set proper permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && find /var/www/html -type f -exec chmod 644 {} \;
+RUN chown -R www-data:www-data /var/www/html && \
+    chown -R www-data:www-data /var/log/nginx && \
+    chmod -R 755 /var/www/html
 
 # Expose port 80
 EXPOSE 80
@@ -34,5 +45,5 @@ EXPOSE 80
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Start Nginx and PHP-FPM
+# Set the entrypoint
 ENTRYPOINT ["docker-entrypoint.sh"]
