@@ -3,6 +3,7 @@ version: '3.8'
 services:
   web:
     image: ${REGISTRY:-localhost}/suyay_web:${TAG:-latest}
+    # No need to expose ports directly as the front-facing nginx will handle this
     depends_on:
       - db
     environment:
@@ -19,7 +20,6 @@ services:
       restart_policy:
         condition: on-failure
         max_attempts: 3
-      # Removed the placement constraint to allow deployment on any node
 
   db:
     image: mysql:8.0
