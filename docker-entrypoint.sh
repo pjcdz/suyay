@@ -5,15 +5,12 @@ echo "Starting container..."
 
 # Ensure proper permissions
 echo "Setting permissions..."
-chmod -R 755 /var/www/html
 chown -R www-data:www-data /var/www/html
+find /var/www/html -type d -exec chmod 755 {} \;
+find /var/www/html -type f -exec chmod 644 {} \;
 
-# Create log directory if it doesn't exist
-mkdir -p /var/log/nginx
-chown -R www-data:www-data /var/log/nginx
-
-# Display directory contents for debugging
-echo "Contents of web root directory:"
+# List files to verify
+echo "Checking web root contents..."
 ls -la /var/www/html
 
 # Start PHP-FPM
@@ -26,4 +23,4 @@ nginx -t
 
 # Start Nginx in foreground mode
 echo "Starting Nginx..."
-exec nginx -g 'daemon off;'
+nginx -g 'daemon off;'
