@@ -21,9 +21,7 @@ services:
       restart_policy:
         condition: on-failure
         max_attempts: 3
-      placement:
-        constraints:
-          - node.role == worker
+      # Removed the placement constraint to allow deployment on any node
 
   db:
     image: mysql:8.0
