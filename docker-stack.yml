@@ -3,15 +3,13 @@ version: '3.8'
 services:
   web:
     image: ${REGISTRY:-localhost}/suyay_web:${TAG:-latest}
-    # Remove direct port exposure since Traefik will handle this
-    # ports:
-    #  - "0.0.0.0:80:80"
     depends_on:
       - db
     environment:
       - DB_URL=mysql://root:suyay_password@db:3306/suyay_db
-    volumes:
-      - ./src:/var/www/html
+    # Remove the volume mount that's causing issues
+    # volumes:
+    #   - ./src:/var/www/html
     networks:
       - suyay-network
       - traefik-public  # Add Traefik network
