@@ -50,7 +50,7 @@ services:
 networks:
   suyay-network:
     driver: overlay
-  traefik-public:
+  traefik_traefik-public:
     external: true  # Use the network created by the Traefik stack
 
 volumes:
