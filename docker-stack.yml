@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web:
-    image: ${REGISTRY:-ghcr.io}/${GITHUB_USERNAME:-pjcdz}/suyay_web:${TAG:-latest}
+    image: ${REGISTRY:-ghcr.io}/${GITHUB_USERNAME:-pjcdz}/suyay_web:${TAG:-renew-coolify}
     depends_on:
       - db
     environment:
