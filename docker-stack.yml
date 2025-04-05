@@ -12,7 +12,7 @@ services:
     #   - ./src:/var/www/html
     networks:
       - suyay-network
-      - traefik-public  # Add Traefik network
+      - traefik_traefik-public  # Change this from traefik-public to traefik_traefik-public
     deploy:
       replicas: 1
       update_config:
