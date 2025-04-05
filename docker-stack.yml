@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web:
-    image: ${REGISTRY:-localhost}/suyay_web:${TAG:-latest}
+    image: ${REGISTRY:-ghcr.io}/${GITHUB_USERNAME:-github-username}/suyay_web:${TAG:-latest}
     depends_on:
       - db
     environment:
