@@ -23,8 +23,8 @@ services:
         max_attempts: 3
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.suyay.rule=Host(`app1.cardozo.com.ar`)"
-        - "traefik.http.services.suyay.loadbalancer.server.port=80"
+        - "traefik.http.routers.web.rule=Host(`app1.cardozo.com.ar`)"
+        - "traefik.http.services.web.loadbalancer.server.port=80"
         - "traefik.docker.network=traefik-public"
 
   db:
