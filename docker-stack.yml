@@ -7,12 +7,9 @@ services:
       - db
     environment:
       - DB_URL=mysql://root:suyay_password@db:3306/suyay_db
-    # Remove the volume mount that's causing issues
-    # volumes:
-    #   - ./src:/var/www/html
     networks:
       - suyay-network
-      - traefik_traefik-public  # Change this from traefik-public to traefik_traefik-public
+      - traefik_traefik-public
     deploy:
       replicas: 1
       update_config:
@@ -24,8 +21,9 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.web.rule=Host(`app1.cardozo.com.ar`)"
+        - "traefik.http.routers.web.entrypoints=web"
         - "traefik.http.services.web.loadbalancer.server.port=80"
-        - "traefik.docker.network=traefik-public"
+        - "traefik.docker.network=traefik_traefik-public"  # Match external network name exactly
 
   db:
     image: mysql:8.0
@@ -51,7 +49,7 @@ networks:
   suyay-network:
     driver: overlay
   traefik_traefik-public:
-    external: true  # Use the network created by the Traefik stack
+    external: true
 
 volumes:
   mysql_data:
