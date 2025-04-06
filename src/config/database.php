@@ -19,19 +19,19 @@ $db_password = getSecret('db_password') ?: getenv('DB_PASSWORD') ?: ''; // Lee s
 $db_name = getSecret('db_name') ?: getenv('DB_NAME') ?: 'suyay_db'; // Lee secreto 'db_name', fallback a env 'DB_NAME', default 'suyay_db'
 
 // Crear conexión
-$conn = new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
+$mysqli = new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
 
 // Verificar conexión
-if ($conn->connect_error) {
+if ($mysqli->connect_error) {
     // Es mejor loguear el error que mostrarlo directamente en producción
-    error_log("Connection failed: " . $conn->connect_error);
+    error_log("Connection failed: " . $mysqli->connect_error);
     // Mostrar un mensaje genérico al usuario
     die("Error al conectar con la base de datos.");
 }
 
 // Establecer juego de caracteres
-if (!$conn->set_charset("utf8")) {
-    error_log("Error loading character set utf8: " . $conn->error);
+if (!$mysqli->set_charset("utf8")) {
+    error_log("Error loading character set utf8: " . $mysqli->error);
 }
 
 ?>
