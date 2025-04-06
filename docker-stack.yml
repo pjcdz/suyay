@@ -1,12 +1,26 @@
-version: '3.8'
+  version: '3.8'
 
 services:
   web:
-    image: ${REGISTRY:-ghcr.io}/${GITHUB_USERNAME:-pjcdz}/suyay_web:${TAG:-renew-coolify}
+    # Imagen definida con variables (serán reemplazadas por Actions o defaults)
+    image: ${REGISTRY:-ghcr.io}/${GITHUB_USERNAME:-pjcdz}/suyay_web:${TAG:-latest} # Ajustado tag por defecto a latest
     depends_on:
       - db
+    ports:
+      - "80" # Puerto interno; Traefik maneja el externo
     environment:
-      - DB_URL=mysql://root:suyay_password@db:3306/suyay_db
+      # Variables no sensibles que la app necesita
+      - DB_HOST=db
+      - DB_PORT=3306
+      # QUITA cualquier DB_USER, DB_PASSWORD, DB_NAME o DB_URL de aquí
+    secrets
+      # Lista los secretos que el servicio 'web' necesita leer
+      - source: db_user      # Nombre del Docker Secret en Swarm
+        target: db_user      # Nombre del archivo en /run/secrets/ dentro del contenedor
+      - source: db_password
+        target: db_password
+      - source: db_name
+        target: db_name
     networks:
       - suyay-network
       - traefik_traefik-public
@@ -19,27 +33,37 @@ services:
         condition: on-failure
         max_attempts: 3
       labels:
+        # Etiquetas para Traefik
         - "traefik.enable=true"
-        - "traefik.http.routers.web.rule=Host(`app1.cardozo.com.ar`)"
-        # Update these lines for HTTPS
-        - "traefik.http.routers.web.entrypoints=websecure"
-        - "traefik.http.routers.web.tls=true"
-        - "traefik.http.routers.web.tls.certresolver=myresolver"
-        - "traefik.http.services.web.loadbalancer.server.port=80"
+        - "traefik.http.routers.suyay-web.rule=Host(`app1.cardozo.com.ar`)" # Reemplaza si tu dominio es otro
+        - "traefik.http.routers.suyay-web.entrypoints=websecure" # Asume HTTPS
+        - "traefik.http.routers.suyay-web.tls=true"
+        - "traefik.http.routers.suyay-web.tls.certresolver=myresolver" # Reemplaza con tu resolver de LetsEncrypt
+        - "traefik.http.services.suyay-web.loadbalancer.server.port=80" # Puerto interno del contenedor web
         - "traefik.docker.network=traefik_traefik-public"
 
   db:
     image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: suyay_password
-      MYSQL_DATABASE: suyay_db
-    ports:
-      - "3309:3306"
+      # Configura MySQL usando archivos de secretos
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_password # El archivo contendrá la contraseña root
+      MYSQL_DATABASE_FILE: /run/secrets/db_name          # El archivo contendrá el nombre de la BD a crear
+      # QUITA MYSQL_ROOT_PASSWORD y MYSQL_DATABASE de aquí
+    secrets:
+      # Lista los secretos que el servicio 'db' necesita
+      # Nota: 'db_user' no es necesario aquí si usamos root y MYSQL_ROOT_PASSWORD_FILE
+      - source: db_password
+        target: db_password # MySQL leerá la contraseña desde /run/secrets/db_password
+      - source: db_name
+        target: db_name     # MySQL leerá el nombre de la BD desde /run/secrets/db_name
+    # Quita el mapeo de puertos explícito si no necesitas acceder a la BD desde fuera de Docker Swarm
+    # ports:
+    #  - "3309:3306"
     volumes:
-      - ./suyayheroku1.sql:/docker-entrypoint-initdb.d/suyayheroku1.sql
-      - mysql_data:/var/lib/mysql
+      - ./suyayheroku1.sql:/docker-entrypoint-initdb.d/suyayheroku1.sql # Script de inicialización
+      - mysql_data:/var/lib/mysql # Volumen persistente
     networks:
-      - suyay-network
+      - suyay-network # Solo red interna
     deploy:
       replicas: 1
       placement:
@@ -48,12 +72,24 @@ services:
       restart_policy:
         condition: on-failure
 
+# Definición de Redes
 networks:
   suyay-network:
     driver: overlay
   traefik_traefik-public:
     external: true
 
+# Definición de Volúmenes
 volumes:
   mysql_data:
     driver: local
+
+# Definición de Secretos (OBLIGATORIO: declararlos como externos)
+# Docker Swarm espera que estos secretos ya existan (los creará el workflow)
+secrets:
+  db_user:
+    external: true
+  db_password:
+    external: true
+  db_name:
+    external: true
