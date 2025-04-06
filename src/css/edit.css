@@ -1,0 +1,348 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Color Palette */
+  --color-primary: #7C5DFA; /* Purple - Main Brand Color */
+  --color-primary-light: #9277FF;
+  --color-primary-dark: #6441E0;
+  
+  --color-secondary: #6B7280; /* Gray */
+  --color-accent: #FF9F43; /* Orange Accent */
+  
+  --color-background: #F8FAFC; /* Very Light Gray */
+  --color-surface: #FFFFFF; /* White */
+  
+  --color-text-primary: #1F2937; /* Dark Gray */
+  --color-text-secondary: #4B5563;
+  
+  --color-border: #E5E7EB;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+
+  /* Typography */
+  --font-family-base: 'Poppins', sans-serif;
+  --font-size-base: 16px;
+  --font-size-sm: 14px;
+  --font-size-xs: 12px;
+  --font-size-lg: 18px;
+  --font-size-xl: 24px;
+  
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  --line-height-base: 1.6;
+  --line-height-tight: 1.2;
+
+  /* Spacing */
+  --space-xs: 0.25rem; /* 4px */
+  --space-sm: 0.5rem;  /* 8px */
+  --space-md: 1rem;    /* 16px */
+  --space-lg: 1.5rem;  /* 24px */
+  --space-xl: 2rem;    /* 32px */
+  --space-xxl: 3rem;   /* 48px */
+
+  /* Borders */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.15s;
+  --transition-base: 0.3s;
+  --transition-slow: 0.5s;
+  --transition-timing: ease-in-out;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+  border-radius: var(--border-radius-full);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-light);
+  border-radius: var(--border-radius-full);
+  border: 3px solid var(--color-background);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* ===== BASE STYLES ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-user-select: none; /* Safari */        
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+}
+
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  height: 100%;
+  min-height: 100vh;
+  width: 100%;
+  overflow-y: hidden;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== MODAL ===== */
+.edit-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation-name: fadeIn;
+  animation-duration: 0.4s;
+}
+
+/* Animation for modal appearance */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  width: 360px;
+  overflow: hidden;
+  transition: all var(--transition-base) var(--transition-timing);
+  margin: var(--space-md);
+}
+
+.modal-content:hover {
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-5px);
+}
+
+.modal-header {
+  width: 100%;
+  padding: var(--space-md);
+  border-bottom: 2px solid var(--color-primary-light);
+  text-align: center;
+  background-color: rgba(146, 119, 255, 0.1);
+}
+
+.modal-header h2 {
+  font-size: var(--font-size-lg);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  margin: var(--space-xs) 0;
+  letter-spacing: 0.5px;
+}
+
+.edit-close {
+  color: var(--color-primary);
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  margin-left: 5px;
+  margin-right: 3px;
+  cursor: pointer;
+  transition: all var(--transition-base) var(--transition-timing);
+}
+
+.edit-close:hover, .edit-close:focus {
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+
+.modal-body {
+  padding: var(--space-lg);
+  width: 100%;
+}
+
+.modal-body label {
+  margin-top: var(--space-md);
+  padding: 0;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  display: block;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.modal-body input {
+  width: 100%;
+  margin-bottom: var(--space-sm);
+  border: none;
+  border-bottom: 2px solid var(--color-primary-light);
+  background-color: rgba(255, 255, 255, 0.7);
+  outline: none;
+  height: 40px;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  padding: 0 var(--space-sm);
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-base) var(--transition-timing);
+  -webkit-appearance: none; /* Remove default iOS styling */
+  appearance: none;
+}
+
+.modal-body input:focus {
+  border-color: var(--color-primary);
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 6px -1px rgba(124, 93, 250, 0.1);
+}
+
+.modal-body input[readonly] {
+  background-color: rgba(243, 244, 246, 0.5);
+  cursor: not-allowed;
+  border-color: var(--color-border);
+}
+
+.modal-footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-md);
+  background-color: rgba(243, 244, 246, 0.7);
+}
+
+.modal-footer a {
+  text-decoration: none;
+  flex: 1;
+  margin-right: var(--space-sm);
+}
+
+.modal-footer #cancelar, .modal-footer #guardar {
+  padding: var(--space-sm) var(--space-md);
+  height: 45px;
+  transition: all var(--transition-base) var(--transition-timing);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: white;
+  cursor: pointer;
+  border: 0;
+  -webkit-appearance: none; /* Eliminar estilo por defecto en iOS */
+  appearance: none;
+  -webkit-border-radius: var(--border-radius-md); /* Asegurar bordes redondeados en iOS */
+  border-radius: var(--border-radius-md);
+  background-image: none; /* Evitar gradientes automáticos en iOS */
+}
+
+.modal-footer #cancelar {
+  background-color: var(--color-error);
+}
+
+.modal-footer #guardar {
+  background-color: var(--color-success);
+}
+
+.modal-footer #cancelar:hover, .modal-footer #guardar:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.modal-footer #cancelar:active, .modal-footer #guardar:active {
+  transform: translateY(0);
+}
+
+/* iOS/Mobile scroll optimization */
+@media (max-width: 767px) {
+  /* Mobile-specific adjustments */
+}
+
+/* ===== LAPTOP & MEDIUM SCREENS OPTIMIZATION ===== */
+@media (min-width: 768px) and (max-width: 1600px) {
+  html {
+    /* Apply stronger scaling factor for everything to make the UI more compact */
+    font-size: 12px; /* Reduce base font size further to 12px */
+  }
+  
+  #contenedor-principal {
+    max-width: 840px; /* Even smaller container width */
+    margin: var(--space-xs) auto; /* Further reduce top/bottom margin */
+  }
+  
+  .modal-content {
+    width: 320px; /* Smaller modal width */
+  }
+  
+  .modal-header h2 {
+    font-size: 1.5rem; /* Smaller heading */
+  }
+  
+  input[type="text"],
+  input[type="password"],
+  input[type="number"],
+  select,
+  textarea {
+    padding: calc(var(--space-xs) * 1.5); /* Further reduced padding */
+    height: 35px; /* Smaller height */
+    font-size: 0.85rem; /* Smaller font */
+  }
+  
+  button {
+    padding: calc(var(--space-xs) * 1.5) var(--space-sm); /* Further reduced padding */
+    height: 35px; /* Smaller height */
+    font-size: 0.85rem; /* Smaller font */
+  }
+  
+  .modal-body {
+    padding: var(--space-md); /* Reduced padding */
+  }
+  
+  .modal-footer #cancelar, 
+  .modal-footer #guardar {
+    padding: calc(var(--space-xs) * 1.5);
+    height: 35px;
+    font-size: 0.85rem;
+  }
+  
+  h1, h2 {
+    margin-bottom: var(--space-sm); /* Further reduced margin */
+  }
+  
+  .form-group {
+    margin-bottom: var(--space-sm); /* Further reduced margin */
+  }
+}

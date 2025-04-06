@@ -1,0 +1,36 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+    environment:
+      - DB_URL=mysql://root:suyay_password@db:3306/suyay_db
+    volumes:
+      - ./src:/var/www/html
+    networks:
+      - suyay-network
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: suyay_password
+      MYSQL_DATABASE: suyay_db
+    ports:
+      - "3309:3306"
+    volumes:
+      - ./suyayheroku1.sql:/docker-entrypoint-initdb.d/suyayheroku1.sql
+      - mysql_data:/var/lib/mysql
+    networks:
+      - suyay-network
+
+networks:
+  suyay-network:
+    driver: bridge
+
+volumes:
+  mysql_data:

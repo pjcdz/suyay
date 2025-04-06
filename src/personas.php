@@ -5,7 +5,7 @@ if(!isset($_SESSION['AdminLoginId'])) {
     header("Location: login");
 }
 
-require_once '../config/database.php';
+require_once 'config/database.php';
 
 
 // Consulta SQL para obtener los datos de las personas y sus horas alquiladas junto con las descripciones
@@ -26,6 +26,11 @@ if ($result->num_rows > 0) {
         $dni = $row['dni'];
         $consultorio = $row['consultorio'];
         $hora = $row['hora'];
+
+        // Skip if $hora is null
+        if ($hora === null) {
+            continue;
+        }
 
         // Extraer el día y la hora
         $diaHora = explode(" ", $hora);
@@ -64,7 +69,6 @@ if ($result->num_rows > 0) {
     <link rel="icon" href="/css/suyay.png" type="image/icon type">
     <link rel="stylesheet" href="/css/personas.css">
     <script src="/js/edit.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <!-- Imagen que se mostrará cuando se comparta la página -->
     <meta property="og:image" content="/css/suyayIcon.png">
@@ -80,10 +84,8 @@ if ($result->num_rows > 0) {
     <meta property="og:type" content="website">
 </head>
 <body>
-    <div id="particles-js"></div>
     <div id="contenedor-principal">
         <button onclick="window.location.href='admin'">Ir a Consultorios</button>
-        <h1>Lista de Personas</h1>
         <table border="1">
             <thead>
                 <tr>
@@ -129,7 +131,7 @@ if ($result->num_rows > 0) {
                             echo "<td>" . htmlspecialchars($persona['deuda']) . "<br>(" . htmlspecialchars($horas) . "hs)</td>";
                             echo "<td>";
                             foreach ($persona['ocupacion'] as $consultorio => $dias) {
-                                echo "<strong>" . htmlspecialchars($consultorio) . ":</strong> ";
+                                echo "<strong>" . htmlspecialchars($consultorio) . ":</strong><br>";
                                 foreach ($dias as $dia => $horas) {
                                     echo "<strong>" . htmlspecialchars($dia)  . ":</strong><br>";
                                     echo implode("<br>", array_map('htmlspecialchars', $horas));

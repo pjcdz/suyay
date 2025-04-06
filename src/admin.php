@@ -5,7 +5,7 @@ if(!isset($_SESSION['AdminLoginId'])) {
     header("Location: login");
 }
 
-require_once '../config/database.php';
+require_once 'config/database.php';
 
 function getCodConsultorio() {
     if(empty($_GET["codConsultorio"])){
@@ -61,7 +61,7 @@ function renderHoras($codHoras, $codConsultorio) {
                 $class .= ' ' . $dnis[$dni];
             }
             if (!$estadoHora['isPagado']) {
-                $linkText = '❌';
+                $linkText = '<span class="unpaid-marker">❌</span>';
             }
         }
         echo "<a href=\"edit?codConsultorio=$codConsultorio&codHora=$codHora\" class=\"$class\">$linkText</a>";
@@ -77,12 +77,13 @@ $codHoras = ["codHoras0809", "codHoras0910", "codHoras1011", "codHoras1112", "co
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Suyay - Admin</title>
     <link rel="icon" href="css/suyay.png" type="image/icon type">
     <link rel="stylesheet" href="/css/index.css">
     <script src="/js/edit.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <!-- Imagen que se mostrará cuando se comparta la página -->
     <meta property="og:image" content="/css/suyayIcon.png">
@@ -98,15 +99,13 @@ $codHoras = ["codHoras0809", "codHoras0910", "codHoras1011", "codHoras1112", "co
     <meta property="og:type" content="website">
 </head>
 <body>
-    <div id="particles-js"></div>
     <div id="contenedor-principal">
         <div id="selector-consultorio">
         <select id="consultorioSelect" onchange="window.location.href=this.value;">
-                <option value="admin?codConsultorio=<?php echo $codConsultorio; ?>">Consultorio seleccionado: <?php echo $codConsultorio; ?></option>
-                <option value="admin?codConsultorio=1">Consultorio 1</option>
-                <option value="admin?codConsultorio=2">Consultorio 2</option>
-                <option value="admin?codConsultorio=3">Consultorio 3</option>
-                <option value="admin?codConsultorio=4">Consultorio 4</option>
+                <option value="admin?codConsultorio=1" <?php if($codConsultorio == 1) echo 'selected'; ?>>Consultorio 1</option>
+                <option value="admin?codConsultorio=2" <?php if($codConsultorio == 2) echo 'selected'; ?>>Consultorio 2</option>
+                <option value="admin?codConsultorio=3" <?php if($codConsultorio == 3) echo 'selected'; ?>>Consultorio 3</option>
+                <option value="admin?codConsultorio=4" <?php if($codConsultorio == 4) echo 'selected'; ?>>Consultorio 4</option>
                 <!-- <option value="admin?codConsultorio=5">Consultorio 5</option>
                 <option value="admin?codConsultorio=6">Consultorio 6</option> -->
             </select>

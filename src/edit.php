@@ -5,7 +5,7 @@ if(!isset($_SESSION['AdminLoginId'])) {
     header("Location: login");
 }
 
-require_once '../config/database.php';
+require_once 'config/database.php';
 
 if(isset($_POST['update'])) {   
     $dni = empty($_POST['dni']) ? 0 : $_POST['dni'];
@@ -32,6 +32,9 @@ if(isset($_POST['update'])) {
         $credito = 0; 
     }
     
+    // Initialize isPagado
+    $isPagado = 0;
+
     // Determine if paid
     if( $deuda != 0 ) {
         $isPagado = $credito < $deuda ? 0 : 1;
@@ -58,6 +61,15 @@ if(isset($_POST['update'])) {
             $result = mysqli_query($mysqli, "UPDATE personas SET nombre='$nombre', credito='$credito', deuda='$deuda' WHERE dni='$dni'");
         }
     } 
+
+    // Get updated credit and debt values
+    $result = mysqli_query($mysqli, "SELECT credito, deuda FROM personas WHERE dni='$dni'");
+    $row = mysqli_fetch_assoc($result);
+    $credito = $row['credito'];
+    $deuda = $row['deuda'];
+
+    // Determine if paid
+    $isPagado = $deuda != 0 ? ($credito < $deuda ? 0 : 1) : 0;
 
     //updating the table
     $result = mysqli_query($mysqli, "UPDATE horasalquiladas SET dni='$dni', isPagado='$isPagado', isOcupado='$isOcupado' WHERE codHora='$codHora' AND codConsultorio='$codConsultorio'");
@@ -176,7 +188,6 @@ if(isset($_POST['update'])) {
     <link rel="icon" href="css/suyay.png" type="image/icon type">
     <link rel="stylesheet" href="/css/edit.css">
     <script src="/js/edit.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <!-- Imagen que se mostrará cuando se comparta la página -->
     <meta property="og:image" content="/css/suyayIcon.png">
@@ -192,7 +203,6 @@ if(isset($_POST['update'])) {
     <meta property="og:type" content="website">
 </head>
 <body>
-    <div id="particles-js"></div>
     <div id="contenedor-principal">
         <div class="edit-modal">
             <div class="modal-content">

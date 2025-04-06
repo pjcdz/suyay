@@ -1,0 +1,515 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Color Palette */
+  --color-primary: #7C5DFA; /* Purple - Main Brand Color */
+  --color-primary-light: #9277FF;
+  --color-primary-dark: #6441E0;
+  
+  --color-secondary: #6B7280; /* Gray */
+  --color-accent: #FF9F43; /* Orange Accent */
+  
+  --color-background: #F8FAFC; /* Very Light Gray */
+  --color-surface: #FFFFFF; /* White */
+  
+  --color-text-primary: #1F2937; /* Dark Gray */
+  --color-text-secondary: #4B5563;
+  
+  --color-border: #E5E7EB;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+
+  /* Occupied Slot Colors - Modern pastel palette */
+  --color-occupied-1: #FFD8E3; /* Soft Pink */
+  --color-occupied-2: #D8E2FF; /* Soft Blue */
+  --color-occupied-3: #D8FFF2; /* Soft Teal */
+  --color-occupied-4: #F0FFD8; /* Soft Green */
+  --color-occupied-5: #FFE7D8; /* Soft Orange */
+
+  /* Typography */
+  --font-family-base: 'Poppins', sans-serif;
+  --font-size-base: 16px;
+  --font-size-sm: 14px;
+  --font-size-xs: 12px;
+  --font-size-lg: 18px;
+  --font-size-xl: 24px;
+  
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  --line-height-base: 1.6;
+  --line-height-tight: 1.2;
+
+  /* Spacing */
+  --space-xs: 0.25rem; /* 4px */
+  --space-sm: 0.5rem;  /* 8px */
+  --space-md: 1rem;    /* 16px */
+  --space-lg: 1.5rem;  /* 24px */
+  --space-xl: 2rem;    /* 32px */
+  --space-xxl: 3rem;   /* 48px */
+
+  /* Borders */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.15s;
+  --transition-base: 0.3s;
+  --transition-slow: 0.5s;
+  --transition-timing: ease-in-out;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* iOS specific variables */
+  --ios-bottom-safe-area: env(safe-area-inset-bottom, 0px);
+  --ios-top-safe-area: env(safe-area-inset-top, 0px);
+  --vh: 1vh;
+}
+
+/* Improved scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+  border-radius: var(--border-radius-full);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-light);
+  border-radius: var(--border-radius-full);
+  border: 3px solid var(--color-background);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* ===== BASE STYLES ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  overflow-y: hidden;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== LAYOUT ===== */
+#contenedor-principal {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--space-md);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  position: relative;
+  overflow: hidden;
+  min-height: 90vh;
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+/* ===== CONSULTORIO SELECTOR ===== */
+#selector-consultorio {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+  padding: var(--space-md);
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
+}
+
+#consultorioSelect {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-base) var(--transition-timing);
+  flex: 1;
+  max-width: 300px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+#consultorioSelect:hover, #consultorioSelect:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(124, 93, 250, 0.15);
+  outline: none;
+}
+
+#consultorioSelect option {
+  padding: var(--space-sm);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+button {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--border-radius-md);
+  border: none;
+  background-color: var(--color-primary);
+  color: white;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-base) var(--transition-timing);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-appearance: none; /* Eliminar estilo por defecto en iOS */
+  appearance: none;
+  -webkit-border-radius: var(--border-radius-md); /* Asegurar bordes redondeados en iOS */
+  border-radius: var(--border-radius-md);
+  background-image: none; /* Evitar gradientes automáticos en iOS */
+}
+
+button:hover {
+  background-color: var(--color-primary-light);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+button:active {
+  background-color: var(--color-primary-dark);
+  transform: translateY(0);
+}
+
+/* ===== CALENDARIO ===== */
+#calendario {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+/* Quitar el subrayado de los enlaces en el calendario */
+#calendario a {
+  text-decoration: none;
+}
+
+.hora {
+  display: grid;
+  grid-template-columns: 70px repeat(6, 1fr);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.hora:last-child {
+  border-bottom: none;
+}
+
+.tiempo {
+  padding: var(--space-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  background-color: rgba(243, 244, 246, 0.8);
+  border-right: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.hora:first-child .tiempo {
+  background-color: var(--color-primary-light);
+  color: white;
+  font-weight: var(--font-weight-bold);
+}
+
+.dia {
+  padding: var(--space-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-right: 1px solid var(--color-border);
+  transition: all var(--transition-base) var(--transition-timing);
+  position: relative;
+  cursor: pointer;
+  height: 50px;
+}
+
+.unpaid-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.dia:last-child {
+  border-right: none;
+}
+
+.dia:hover {
+  background-color: rgba(243, 244, 246, 0.7);
+  box-shadow: inset 0 0 0 2px var(--color-primary-light);
+}
+
+/* Occupied slot styling */
+.dia-ocupado1 {
+  background-color: var(--color-occupied-1);
+}
+
+.dia-ocupado2 {
+  background-color: var(--color-occupied-2);
+}
+
+.dia-ocupado3 {
+  background-color: var(--color-occupied-3);
+}
+
+.dia-ocupado4 {
+  background-color: var(--color-occupied-4);
+}
+
+.dia-ocupado5 {
+  background-color: var(--color-occupied-5);
+}
+
+/* Hover states for occupied slots */
+.dia-ocupado1:hover, .dia-ocupado2:hover, 
+.dia-ocupado3:hover, .dia-ocupado4:hover,
+.dia-ocupado5:hover {
+  filter: brightness(0.95);
+}
+
+/* ===== RESPONSIVE STYLES ===== */
+@media (max-width: 767px) {
+  html {
+    overflow: hidden; /* Prevent all scrolling on html */
+  }
+  
+  html, body {
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow-y: auto; /* Changed to allow scrolling */
+    height: 100%; /* Ensure body takes full height */
+    width: 100%;
+    position: relative; /* Changed from fixed to allow proper scrolling */
+    -webkit-overflow-scrolling: touch; /* Ensure smooth scrolling on iOS */
+  }
+
+  #contenedor-principal {
+    max-width: 100%; /* Allow container to fill width */
+    margin: var(--space-sm) auto; /* Reduce margin */
+    padding: var(--space-xs) var(--space-xs) calc(var(--space-xs) + var(--ios-bottom-safe-area)); /* Add iOS safe area to bottom padding */
+    height: calc(100% - var(--ios-bottom-safe-area) - var(--ios-top-safe-area) - var(--space-lg)); /* Account for safe areas */
+    overflow-y: auto; /* Allow internal scrolling if content overflows vertically */
+    -webkit-overflow-scrolling: touch;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on iOS */
+  }
+
+  #selector-consultorio {
+    flex-direction: row; 
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm);
+    margin-bottom: var(--space-md);
+    gap: var(--space-sm);
+    position: sticky; /* Make the selector stick to top on scroll */
+    top: 0;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.95); /* More solid background */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+  }
+
+  #consultorioSelect {
+    flex-grow: 1;
+    max-width: none;
+    font-size: var(--font-size-sm);
+    padding: var(--space-xs) var(--space-sm);
+    padding-right: 30px;
+    background-size: 14px;
+    background-position: right 8px center;
+    -webkit-appearance: none; /* Fix appearance on iOS */
+    appearance: none;
+    margin-top: -7px;
+  }
+
+  button {
+    font-size: var(--font-size-sm);
+    padding: var(--space-xs) var(--space-sm);
+    flex-shrink: 0;
+    -webkit-appearance: none; /* Fix appearance on iOS */
+    appearance: none;
+    touch-action: manipulation; /* Optimize for touch */
+    margin-top: -7px;
+  }
+
+  #calendario {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .hora {
+    grid-template-columns: 40px repeat(6, 1fr);
+    min-width: 360px;
+  }
+
+  .tiempo {
+    padding: 2px;
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  .dia {
+    padding: 4px;
+    font-size: 10px;
+    touch-action: manipulation; /* Optimize for touch */
+  }
+  
+  .unpaid-marker {
+    font-size: 1em;
+  }
+}
+
+/* iOS specific styles */
+.ios-device {
+  /* Prevent elastic scrolling/bounce effect on iOS */
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.ios-device #contenedor-principal {
+  /* Allow scrolling inside the container instead of body */
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(var(--space-md) + var(--ios-bottom-safe-area));
+  margin-bottom: 0;
+}
+
+.ios-device.keyboard-open {
+  /* When keyboard is visible, allow content to scroll naturally */
+  position: relative;
+  overflow: auto;
+}
+
+.ios-device #calendario {
+  /* Improve touch interaction on iOS */
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ios-device .dia {
+  /* Make touch targets bigger on iOS */
+  min-height: 44px;
+}
+
+/* Adjust for iPhone notch and home indicator areas */
+@supports (padding: max(0px)) {
+  .ios-device #contenedor-principal {
+    padding-left: max(var(--space-md), env(safe-area-inset-left));
+    padding-right: max(var(--space-md), env(safe-area-inset-right));
+    padding-bottom: max(var(--space-md), env(safe-area-inset-bottom));
+  }
+  
+  .ios-device #selector-consultorio {
+    padding-top: max(var(--space-md), env(safe-area-inset-top));
+  }
+}
+
+/* Use the custom vh variable for height calculations on iOS */
+@media (max-width: 767px) {
+  .ios-device #contenedor-principal {
+    height: calc(100 * var(--vh) - var(--space-lg));
+  }
+  
+  .ios-device .hora {
+    /* Ensure consistent row sizing */
+    grid-template-rows: minmax(44px, auto);
+  }
+}
+
+/* ===== LAPTOP & MEDIUM SCREENS OPTIMIZATION ===== */
+@media (min-width: 768px) and (max-width: 1600px) {
+  html {
+    /* Apply stronger scaling factor for everything to make the UI more compact */
+    font-size: 12px; /* Reduce base font size further to 12px */
+  }
+  
+  #contenedor-principal {
+    max-width: 590px; /* Reduced by 30% from 840px */
+    margin: var(--space-xs) auto; /* Further reduce top/bottom margin */
+    min-height: 82vh; /* Smaller container height */
+    padding: var(--space-sm); /* Reduced padding */
+  }
+  
+  .hora {
+    grid-template-columns: 50px repeat(6, 1fr); /* Smaller first column */
+  }
+  
+  .dia {
+    height: 38px; /* Smaller height for day cells */
+    padding: calc(var(--space-md) * 0.7); /* Further reduced padding */
+  }
+  
+  .tiempo {
+    padding: calc(var(--space-sm) * 0.7); /* Further reduced padding */
+    font-size: 0.85rem; /* Smaller font */
+  }
+  
+  #selector-consultorio {
+    margin-bottom: var(--space-md); /* Reduced margin */
+    padding: calc(var(--space-sm) * 0.8); /* Reduced padding */
+  }
+  
+  #consultorioSelect {
+    padding: calc(var(--space-xs) * 1.3) var(--space-sm);
+    font-size: 0.85rem;
+  }
+  
+  button {
+    padding: calc(var(--space-xs) * 1.3) var(--space-sm);
+    font-size: 0.85rem;
+    height: 32px;
+  }
+}
