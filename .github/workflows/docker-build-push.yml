@@ -76,10 +76,20 @@ jobs:
             echo "${{ secrets.DB_NAME }}" | docker secret create db_name_${TIMESTAMP} -
             echo "✅ New Docker Secrets created successfully."
             
-            # Update the stack configuration file to use new secrets
-            sed -i "s/db_user:/db_user_${TIMESTAMP}:/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
-            sed -i "s/db_password:/db_password_${TIMESTAMP}:/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
-            sed -i "s/db_name:/db_name_${TIMESTAMP}:/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+            echo "🔄 Creating backup of stack configuration..."
+            cp ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml.bak
+            
+            echo "🔄 Updating secret references in docker-stack.yml..."
+            # First, update all references in the secrets section at the bottom
+            sed -i "/^secrets:/,$ s/db_user:/db_user_${TIMESTAMP}:/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+            sed -i "/^secrets:/,$ s/db_password:/db_password_${TIMESTAMP}:/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+            sed -i "/^secrets:/,$ s/db_name:/db_name_${TIMESTAMP}:/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+            
+            # Then update source references within services
+            sed -i "s/source: db_user/source: db_user_${TIMESTAMP}/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+            sed -i "s/source: db_password/source: db_password_${TIMESTAMP}/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+            sed -i "s/source: db_name/source: db_name_${TIMESTAMP}/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+            
             echo "✅ Stack configuration updated with new secret names."
             
             echo "🚀 Deploying Docker Stack using updated configuration..."
