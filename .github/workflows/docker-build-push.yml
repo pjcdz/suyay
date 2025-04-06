@@ -61,7 +61,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Sync repository files to server via rsync
-        uses: easingthemes/ssh-deploy@v6 # <-- CORREGIDO A @v6
+        uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
           ARGS: "-avzr --delete" # rsync args
