@@ -61,42 +61,47 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Update secrets and Deploy Stack via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
-          script: |
-            set -e
-            echo "🔄 Creating new Docker Secrets with versioned names..."
-            # Create new secrets with timestamp suffix to avoid naming conflicts
-            TIMESTAMP=$(date +%Y%m%d%H%M%S)
-            echo "${{ secrets.DB_USER }}" | docker secret create db_user_${TIMESTAMP} -
-            echo "${{ secrets.DB_PASSWORD }}" | docker secret create db_password_${TIMESTAMP} -
-            echo "${{ secrets.DB_NAME }}" | docker secret create db_name_${TIMESTAMP} -
-            echo "✅ New Docker Secrets created successfully."
-            
-            echo "🔄 Creating backup of stack configuration..."
-            cp ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml.bak
-            
-            echo "🔄 Updating secret references in docker-stack.yml..."
-            # First, update all references in the secrets section at the bottom
-            sed -i "/^secrets:/,$ s/db_user:/db_user_${TIMESTAMP}:/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
-            sed -i "/^secrets:/,$ s/db_password:/db_password_${TIMESTAMP}:/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
-            sed -i "/^secrets:/,$ s/db_name:/db_name_${TIMESTAMP}:/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
-            
-            # Then update source references within services
-            sed -i "s/source: db_user/source: db_user_${TIMESTAMP}/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
-            sed -i "s/source: db_password/source: db_password_${TIMESTAMP}/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
-            sed -i "s/source: db_name/source: db_name_${TIMESTAMP}/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
-            
-            echo "✅ Stack configuration updated with new secret names."
-            
-            echo "🚀 Deploying Docker Stack using updated configuration..."
-            docker stack deploy --with-registry-auth -c ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml suyay
-            echo "🎉 Stack deployment command executed successfully."
-            
-            echo "🧹 Cleaning up old secrets (will succeed only if they are no longer in use)..."
-            # Sleep to allow services to start using new secrets before attempting cleanup
-            sleep 30
-            docker secret rm db_user db_password db_name || echo "Some old secrets are still in use or already removed. Continuing..."
+  uses: appleboy/ssh-action@v1.0.3
+  with:
+    host: ${{ secrets.VPS_HOST }}
+    username: ${{ secrets.VPS_USER }}
+    key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+    script: |
+      set -e
+      echo "🔄 Creating updated Docker secrets..."
+      echo "${{ secrets.DB_USER }}" | docker secret create db_user_new -
+      echo "${{ secrets.DB_PASSWORD }}" | docker secret create db_password_new -
+      echo "${{ secrets.DB_NAME }}" | docker secret create db_name_new -
+
+      echo "🛠️ Updating docker-stack.yml to use new secrets..."
+      sed -i 's/db_user/db_user_new/g' ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+      sed -i 's/db_password/db_password_new/g' ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+      sed -i 's/db_name/db_name_new/g' ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+
+      echo "🚀 Deploying Docker Stack with updated secrets..."
+      docker stack deploy --with-registry-auth -c ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml suyay
+
+      echo "🧹 Removing old secrets..."
+      docker secret rm db_user || true
+      docker secret rm db_password || true
+      docker secret rm db_name || true
+
+      echo "✅ Renaming new secrets to original names..."
+      echo "${{ secrets.DB_USER }}" | docker secret create db_user -
+      echo "${{ secrets.DB_PASSWORD }}" | docker secret create db_password -
+      echo "${{ secrets.DB_NAME }}" | docker secret create db_name -
+
+      echo "📦 Reverting docker-stack.yml to original secret names..."
+      sed -i 's/db_user_new/db_user/g' ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+      sed -i 's/db_password_new/db_password/g' ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+      sed -i 's/db_name_new/db_name/g' ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+
+      echo "🚀 Final redeploy with original secret names..."
+      docker stack deploy --with-registry-auth -c ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml suyay
+
+      echo "🧽 Cleaning up temporary secrets..."
+      docker secret rm db_user_new || true
+      docker secret rm db_password_new || true
+      docker secret rm db_name_new || true
+
+      echo "🎉 Secrets updated and redeployed successfully!"
