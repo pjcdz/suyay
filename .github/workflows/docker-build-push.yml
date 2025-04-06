@@ -68,5 +68,4 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
           script: |
             echo "🚀 Final redeploy with original secret names..."
-            git pull
             docker stack deploy --with-registry-auth -c ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml suyay
