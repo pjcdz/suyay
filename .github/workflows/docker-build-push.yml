@@ -104,4 +104,4 @@ jobs:
         docker secret rm db_password_new || true
         docker secret rm db_name_new || true
 
-        echo "🎉 Secrets updated and redeployed successfully!"
+        echo "🎉 Secrets updated and redeployed successfully!!"
