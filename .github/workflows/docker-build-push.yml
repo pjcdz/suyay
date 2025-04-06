@@ -68,6 +68,12 @@ jobs:
           username: ${{ secrets.VPS_USER }} # Usuario 'deploy' desde GitHub Secrets
           key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }} # Clave SSH privada desde GitHub Secrets
           script: |
+            # --- Actualizar el repositorio local en el servidor ---
+            echo "🔄 Pulling latest changes from repository..."
+            cd /home/deploy/suyay
+            git pull origin main
+            echo "✅ Repository updated successfully."
+            
             # --- Bloque para Actualizar Docker Secrets ---
             echo "🔄 Updating Docker Secrets on Swarm Manager..."
 
@@ -102,10 +108,7 @@ jobs:
 
             # --- Bloque para Desplegar el Stack ---
             echo "🚀 Deploying Docker Stack..."
-            # Asegúrate que el usuario 'deploy' tenga este directorio y el archivo yml
-            # Podrías añadir un 'git pull' o 'scp' aquí si el yml cambia frecuentemente
-            # OJO: Ajusta la ruta si es diferente en tu servidor
-            # USA EL ARCHIVO docker-stack.yml (que ahora usa secretos)
+            # USA EL ARCHIVO docker-stack.yml actualizado con git pull
             docker stack deploy --with-registry-auth -c /home/deploy/suyay/docker-stack.yml suyay
 
             echo "🎉 Stack deployment command executed."
