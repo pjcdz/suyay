@@ -67,5 +67,41 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
           script: |
+            set -e
+            echo "🔄 Creating updated Docker secrets..."
+            echo "${{ secrets.DB_USER }}" | docker secret create db_user_new -
+            echo "${{ secrets.DB_PASSWORD }}" | docker secret create db_password_new -
+            echo "${{ secrets.DB_NAME }}" | docker secret create db_name_new -
+
+            echo "🛠️ Updating docker-stack.yml to use new secrets..."
+            sed -i 's/db_user/db_user_new/g' ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+            sed -i 's/db_password/db_password_new/g' ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+            sed -i 's/db_name/db_name_new/g' ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+
+            echo "🚀 Deploying Docker Stack with updated secrets..."
+            docker stack deploy --with-registry-auth -c ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml suyay
+
+            echo "🧹 Removing old secrets..."
+            docker secret rm db_user || true
+            docker secret rm db_password || true
+            docker secret rm db_name || true
+
+            echo "✅ Renaming new secrets to original names..."
+            echo "${{ secrets.DB_USER }}" | docker secret create db_user -
+            echo "${{ secrets.DB_PASSWORD }}" | docker secret create db_password -
+            echo "${{ secrets.DB_NAME }}" | docker secret create db_name -
+
+            echo "📦 Reverting docker-stack.yml to original secret names..."
+            sed -i 's/db_user_new/db_user/g' ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+            sed -i 's/db_password_new/db_password/g' ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+            sed -i 's/db_name_new/db_name/g' ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+
             echo "🚀 Final redeploy with original secret names..."
             docker stack deploy --with-registry-auth -c ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml suyay
+
+            echo "🧽 Cleaning up temporary secrets..."
+            docker secret rm db_user_new || true
+            docker secret rm db_password_new || true
+            docker secret rm db_name_new || true
+
+            echo "🎉 Secrets updated and redeployed successfully!!"
