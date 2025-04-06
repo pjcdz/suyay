@@ -6,51 +6,45 @@ on:
       - main # Ejecutar solo cuando se haga push a la rama main
 
 env:
-  REGISTRY: ghcr.io # Registro de contenedores (GitHub Container Registry)
-  IMAGE_NAME_WEB: ${{ github.repository_owner }}/suyay_web # Nombre de la imagen web
+  REGISTRY: ghcr.io
+  IMAGE_NAME_WEB: ${{ github.repository_owner }}/suyay_web
+  REMOTE_DEPLOY_PATH: /home/deploy/suyay # Ruta de despliegue en el servidor
 
 jobs:
   # ----- JOB 1: Construir y Publicar la Imagen Docker -----
   build-and-push:
     runs-on: ubuntu-latest
     permissions:
-      contents: read # Permiso para leer el repo
-      packages: write # Permiso para escribir en GitHub Packages (Container Registry)
-
+      contents: read
+      packages: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4 # Descarga el código del repo
+        uses: actions/checkout@v4 # Descarga el código AL RUNNER
 
+      # ... (pasos de buildx, login, metadata, build-push sin cambios) ...
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3 # Configura Buildx para construir imágenes
-
+        uses: docker/setup-buildx-action@v3
       - name: Log in to the Container registry
         uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }} # Usuario que inició el workflow
-          password: ${{ secrets.GITHUB_TOKEN }} # Token temporal proporcionado por Actions
-
+        with: { registry: ${{ env.REGISTRY }}, username: ${{ github.actor }}, password: ${{ secrets.GITHUB_TOKEN }} }
       - name: Extract metadata (tags, labels) for Web image
-        id: meta-web # Identificador para referenciar los outputs
+        id: meta-web
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_WEB }}
           tags: |
-            type=sha,format=short # Tag con el hash corto del commit (ej: fea4dab)
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }} # Tag 'latest' solo para la rama main
-
-      # Construye la imagen SIN incluir secretos y la sube al registro
+            type=sha,format=short
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
       - name: Build and push Web image
         uses: docker/build-push-action@v5
         with:
-          context: . # Directorio raíz del repo como contexto
-          file: ./Dockerfile # Especifica el Dockerfile a usar
-          push: true # Indica que se debe subir la imagen al registro
-          tags: ${{ steps.meta-web.outputs.tags }} # Usa los tags generados en el paso 'meta-web'
-          labels: ${{ steps.meta-web.outputs.labels }} # Usa las labels generadas
-          cache-from: type=gha # Usa caché de builds anteriores en GitHub Actions
-          cache-to: type=gha,mode=max # Guarda caché para futuras builds
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta-web.outputs.tags }}
+          labels: ${{ steps.meta-web.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   # ----- JOB 2: Desplegar en el Servidor de Producción -----
   deploy:
@@ -58,10 +52,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Descargar el código AL RUNNER
       - name: Checkout repository
         uses: actions/checkout@v4
+        # Opcional: Descomenta si necesitas historial completo para algo (poco común para rsync)
+        # with:
+        #   fetch-depth: 0
 
-      - name: Deploy to production server via SSH
+      # 2. Sincronizar TODO el repositorio (excepto /src/ y /.git/) al servidor usando RSYNC
+      #    Esto añade, actualiza Y ELIMINA archivos en el destino para que coincida con el origen.
+      - name: Sync repository files to server via rsync
+        uses: easingthemes/ssh-deploy@v5.2.1 # Acción que usa rsync
+        # Env vars son leídas automáticamente por la acción para credenciales y host
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+          ARGS: "-avzr --delete" # Argumentos clave de rsync: archive, verbose, compress, recursive, --delete para eliminar archivos extraños en destino
+          SOURCE: "." # Directorio raíz del checkout en el runner
+          REMOTE_HOST: ${{ secrets.VPS_HOST }}
+          REMOTE_USER: ${{ secrets.VPS_USER }}
+          TARGET: ${{ env.REMOTE_DEPLOY_PATH }} # Directorio destino en el servidor
+          EXCLUDE: "/src/, /.git/, /.github/" # EXCLUYE el directorio src/, el .git/ y opcionalmente .github/
+
+      # 3. Actualizar Secretos y Desplegar Stack usando SSH (como antes)
+      - name: Update secrets and Deploy Stack via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -71,15 +84,10 @@ jobs:
             # --- SALIR INMEDIATAMENTE SI UN COMANDO FALLA ---
             set -e
 
-            # --- Actualizar el repositorio local en el servidor ---
-            echo "🔄 Pulling latest changes from repository..."
-            cd /home/deploy/suyay
-            git pull origin main
-            echo "✅ Repository updated successfully."
+            # --- Los archivos ya están sincronizados por RSYNC ---
 
             # --- Bloque para Actualizar Docker Secrets ---
             echo "🔄 Updating Docker Secrets on Swarm Manager..."
-            # ... (los comandos de secrets se mantienen igual) ...
             if docker secret inspect db_user >/dev/null 2>&1; then docker secret rm db_user; fi
             echo "${{ secrets.DB_USER }}" | docker secret create db_user -
             if docker secret inspect db_password >/dev/null 2>&1; then docker secret rm db_password; fi
@@ -89,10 +97,8 @@ jobs:
             echo "✅ Docker Secrets updated successfully."
 
             # --- Bloque para Desplegar el Stack ---
-            echo "🚀 Deploying Docker Stack..."
-            # USA EL ARCHIVO docker-stack.yml actualizado con git pull
-            # AÑADIDO '2>&1' PARA CAPTURAR ERRORES
-            docker stack deploy --with-registry-auth -c /home/deploy/suyay/docker-stack.yml suyay 2>&1
+            echo "🚀 Deploying Docker Stack using synced files..."
+            # Usa el docker-stack.yml sincronizado por rsync
+            docker stack deploy --with-registry-auth -c ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml suyay 2>&1
 
-            # Esta línea solo se ejecutará si docker stack deploy tuvo éxito (exit code 0)
             echo "🎉 Stack deployment command executed successfully."
