@@ -54,61 +54,45 @@ jobs:
 
   # ----- JOB 2: Desplegar en el Servidor de Producción -----
   deploy:
-    needs: build-and-push # Este job depende de que 'build-and-push' termine exitosamente
+    needs: build-and-push
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4 # Descarga el código de nuevo (necesario para tener docker-stack.yml)
+        uses: actions/checkout@v4
 
       - name: Deploy to production server via SSH
-        uses: appleboy/ssh-action@v1.0.3 # Acción para ejecutar comandos remotos vía SSH
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.VPS_HOST }} # Host del VPS desde GitHub Secrets (pjcdz.ddns.net)
-          username: ${{ secrets.VPS_USER }} # Usuario 'deploy' desde GitHub Secrets
-          key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }} # Clave SSH privada desde GitHub Secrets
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
           script: |
+            # --- SALIR INMEDIATAMENTE SI UN COMANDO FALLA ---
+            set -e
+
             # --- Actualizar el repositorio local en el servidor ---
             echo "🔄 Pulling latest changes from repository..."
             cd /home/deploy/suyay
             git pull origin main
             echo "✅ Repository updated successfully."
-            
+
             # --- Bloque para Actualizar Docker Secrets ---
             echo "🔄 Updating Docker Secrets on Swarm Manager..."
-
-            # Actualizar db_user
-            echo "   - Updating db_user..."
-            if docker secret inspect db_user >/dev/null 2>&1; then
-              docker secret rm db_user
-              echo "     Removed existing db_user secret."
-            fi
+            # ... (los comandos de secrets se mantienen igual) ...
+            if docker secret inspect db_user >/dev/null 2>&1; then docker secret rm db_user; fi
             echo "${{ secrets.DB_USER }}" | docker secret create db_user -
-            echo "     Created new db_user secret."
-
-            # Actualizar db_password
-            echo "   - Updating db_password..."
-            if docker secret inspect db_password >/dev/null 2>&1; then
-              docker secret rm db_password
-              echo "     Removed existing db_password secret."
-            fi
+            if docker secret inspect db_password >/dev/null 2>&1; then docker secret rm db_password; fi
             echo "${{ secrets.DB_PASSWORD }}" | docker secret create db_password -
-            echo "     Created new db_password secret."
-
-            # Actualizar db_name
-            echo "   - Updating db_name..."
-            if docker secret inspect db_name >/dev/null 2>&1; then
-              docker secret rm db_name
-              echo "     Removed existing db_name secret."
-            fi
+            if docker secret inspect db_name >/dev/null 2>&1; then docker secret rm db_name; fi
             echo "${{ secrets.DB_NAME }}" | docker secret create db_name -
-            echo "     Created new db_name secret."
-
             echo "✅ Docker Secrets updated successfully."
 
             # --- Bloque para Desplegar el Stack ---
             echo "🚀 Deploying Docker Stack..."
             # USA EL ARCHIVO docker-stack.yml actualizado con git pull
-            docker stack deploy --with-registry-auth -c /home/deploy/suyay/docker-stack.yml suyay
+            # AÑADIDO '2>&1' PARA CAPTURAR ERRORES
+            docker stack deploy --with-registry-auth -c /home/deploy/suyay/docker-stack.yml suyay 2>&1
 
-            echo "🎉 Stack deployment command executed."
+            # Esta línea solo se ejecutará si docker stack deploy tuvo éxito (exit code 0)
+            echo "🎉 Stack deployment command executed successfully."
