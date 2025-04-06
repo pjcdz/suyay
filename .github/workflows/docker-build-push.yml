@@ -1,4 +1,3 @@
-# Contenido idéntico al mostrado en el Paso 7
 name: Build and Deploy Suyay App
 
 on:
@@ -9,14 +8,15 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME_WEB: ${{ github.repository_owner }}/suyay_web
+  REMOTE_DEPLOY_PATH: /home/deploy/suyay
 
 jobs:
+  # ----- JOB 1: Construir y Publicar la Imagen Docker -----
   build-and-push:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -51,6 +51,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  # ----- JOB 2: Desplegar en el Servidor de Producción -----
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
@@ -59,37 +60,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy to production server via SSH
+      - name: Update secrets and Deploy Stack via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.VPS_HOST }} # <-- Usa pjcdz.ddns.net
+          host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
           script: |
+            set -e
             echo "🔄 Updating Docker Secrets on Swarm Manager..."
-            echo "   - Updating db_user..."
-            if docker secret inspect db_user >/dev/null 2>&1; then
-              docker secret rm db_user
-              echo "     Removed existing db_user secret."
-            fi
+            docker secret rm db_user
             echo "${{ secrets.DB_USER }}" | docker secret create db_user -
-            echo "     Created new db_user secret."
-            echo "   - Updating db_password..."
-            if docker secret inspect db_password >/dev/null 2>&1; then
-              docker secret rm db_password
-              echo "     Removed existing db_password secret."
-            fi
+            docker secret rm db_password
             echo "${{ secrets.DB_PASSWORD }}" | docker secret create db_password -
-            echo "     Created new db_password secret."
-            echo "   - Updating db_name..."
-            if docker secret inspect db_name >/dev/null 2>&1; then
-              docker secret rm db_name
-              echo "     Removed existing db_name secret."
-            fi
+            docker secret rm db_name
             echo "${{ secrets.DB_NAME }}" | docker secret create db_name -
-            echo "     Created new db_name secret."
             echo "✅ Docker Secrets updated successfully."
-            echo "🚀 Deploying Docker Stack..."
-            # Asegúrate que la ruta es correcta en tu VPS
-            docker stack deploy --with-registry-auth -c /home/deploy/suyay/docker-stack.yml suyay
-            echo "🎉 Stack deployment command executed."
+
+            echo "🚀 Deploying Docker Stack using synced files..."
+            docker stack deploy --with-registry-auth -c ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml suyay 2>&1
+            echo "🎉 Stack deployment command executed successfully."
