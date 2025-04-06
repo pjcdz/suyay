@@ -13,7 +13,7 @@ services:
       - DB_HOST=db
       - DB_PORT=3306
       # QUITA cualquier DB_USER, DB_PASSWORD, DB_NAME o DB_URL de aquí
-    secrets
+    secrets:
       # Lista los secretos que el servicio 'web' necesita leer
       - source: db_user      # Nombre del Docker Secret en Swarm
         target: db_user      # Nombre del archivo en /run/secrets/ dentro del contenedor
