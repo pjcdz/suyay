@@ -1,29 +1,30 @@
-name: Build and Deploy Suyay App
+name: Build and Push Docker Images
 
-on:
-  push:
-    branches:
-      - main # Ejecutar solo cuando se haga push a la rama main
+on: push
 
 env:
-  REGISTRY: ghcr.io # Registro de contenedores (GitHub Container Registry)
-  IMAGE_NAME_WEB: ${{ github.repository_owner }}/suyay_web # Nombre de la imagen web
-  REMOTE_DEPLOY_PATH: /home/deploy/suyay # Ruta de despliegue en el servidor
+  # GitHub Container Registry
+  REGISTRY: ghcr.io
+  # Repository name as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository_owner }}/suyay
 
 jobs:
-  # ----- JOB 1: Construir y Publicar la Imagen Docker -----
   build-and-push:
     runs-on: ubuntu-latest
+    # Set permissions to allow pushing to GitHub Container Registry
     permissions:
-      contents: read # Permiso para leer el repo
-      packages: write # Permiso para escribir en GitHub Packages (Container Registry)
+      contents: read
+      packages: write
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4 # Descarga el código del repo AL RUNNER
+        uses: actions/checkout@v4
 
+      # Set up Docker Buildx for multi-platform builds if needed
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # Login to GitHub Container Registry
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
@@ -31,85 +32,26 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Web image
+      # Extract metadata for Docker images
+      - name: Extract metadata for web image
         id: meta-web
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_WEB }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}_web
           tags: |
+            type=ref,event=branch
             type=sha,format=short
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Build and push Web image
+      # Build and push the web image
+      - name: Build and push web image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile # Dockerfile del repo local (en el runner)
           push: true
           tags: ${{ steps.meta-web.outputs.tags }}
           labels: ${{ steps.meta-web.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # ----- JOB 2: Desplegar en el Servidor de Producción -----
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-
-    steps:
-      # 1. Descargar el código AL RUNNER (para tener los archivos a copiar)
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      # 2. Asegurar que el directorio de despliegue existe en el servidor
-      - name: Create deploy directory on server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
-          script: |
-            mkdir -p ${{ env.REMOTE_DEPLOY_PATH }}
-            echo "✅ Ensured directory ${{ env.REMOTE_DEPLOY_PATH }} exists."
-
-      # 3. Copiar los archivos necesarios del Runner al Servidor usando SCP
-      - name: Copy deployment files to server
-        uses: appleboy/scp-action@v0.1.7 # Acción específica para SCP
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
-          source: "docker-stack.yml,suyayheroku1.sql" # Archivos a copiar (separados por coma, desde la raíz del repo en el runner)
-          target: "${{ env.REMOTE_DEPLOY_PATH }}" # Directorio destino en el servidor
-          strip_components: 0 # Mantiene la estructura de directorios (0 para poner directo en target)
-
-      # 4. Actualizar Secretos y Desplegar Stack usando SSH
-      - name: Update secrets and Deploy Stack via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
-          script: |
-            # --- SALIR INMEDIATAMENTE SI UN COMANDO FALLA ---
-            set -e
-
-            # --- NO NECESITAMOS GIT PULL AQUÍ ---
-            # Los archivos ya fueron copiados con SCP
-
-            # --- Bloque para Actualizar Docker Secrets ---
-            echo "🔄 Updating Docker Secrets on Swarm Manager..."
-            if docker secret inspect db_user >/dev/null 2>&1; then docker secret rm db_user; fi
-            echo "${{ secrets.DB_USER }}" | docker secret create db_user -
-            if docker secret inspect db_password >/dev/null 2>&1; then docker secret rm db_password; fi
-            echo "${{ secrets.DB_PASSWORD }}" | docker secret create db_password -
-            if docker secret inspect db_name >/dev/null 2>&1; then docker secret rm db_name; fi
-            echo "${{ secrets.DB_NAME }}" | docker secret create db_name -
-            echo "✅ Docker Secrets updated successfully."
-
-            # --- Bloque para Desplegar el Stack ---
-            echo "🚀 Deploying Docker Stack using copied files..."
-            # Usa el docker-stack.yml copiado en el paso anterior
-            docker stack deploy --with-registry-auth -c ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml suyay 2>&1
-
-            echo "🎉 Stack deployment command executed successfully."
+      # The workflow doesn't build a custom DB image since you're using the official MySQL image
