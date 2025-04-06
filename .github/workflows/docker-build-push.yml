@@ -78,6 +78,9 @@ jobs:
             sed -i 's/db_password/db_password_new/g' ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
             sed -i 's/db_name/db_name_new/g' ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
 
+            echo "🔄 Pulling latest changes from the repository..."  
+            git pull origin main
+
             echo "🚀 Deploying Docker Stack with updated secrets..."
             docker stack deploy --with-registry-auth -c ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml suyay
 
