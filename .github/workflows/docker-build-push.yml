@@ -68,15 +68,25 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
           script: |
             set -e
-            echo "🔄 Updating Docker Secrets on Swarm Manager..."
-            docker secret rm db_user
-            echo "${{ secrets.DB_USER }}" | docker secret create db_user -
-            docker secret rm db_password
-            echo "${{ secrets.DB_PASSWORD }}" | docker secret create db_password -
-            docker secret rm db_name
-            echo "${{ secrets.DB_NAME }}" | docker secret create db_name -
-            echo "✅ Docker Secrets updated successfully."
-
-            echo "🚀 Deploying Docker Stack using synced files..."
-            docker stack deploy --with-registry-auth -c ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml suyay 2>&1
+            echo "🔄 Creating new Docker Secrets with versioned names..."
+            # Create new secrets with timestamp suffix to avoid naming conflicts
+            TIMESTAMP=$(date +%Y%m%d%H%M%S)
+            echo "${{ secrets.DB_USER }}" | docker secret create db_user_${TIMESTAMP} -
+            echo "${{ secrets.DB_PASSWORD }}" | docker secret create db_password_${TIMESTAMP} -
+            echo "${{ secrets.DB_NAME }}" | docker secret create db_name_${TIMESTAMP} -
+            echo "✅ New Docker Secrets created successfully."
+            
+            # Update the stack configuration file to use new secrets
+            sed -i "s/db_user:/db_user_${TIMESTAMP}:/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+            sed -i "s/db_password:/db_password_${TIMESTAMP}:/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+            sed -i "s/db_name:/db_name_${TIMESTAMP}:/g" ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml
+            echo "✅ Stack configuration updated with new secret names."
+            
+            echo "🚀 Deploying Docker Stack using updated configuration..."
+            docker stack deploy --with-registry-auth -c ${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml suyay
             echo "🎉 Stack deployment command executed successfully."
+            
+            echo "🧹 Cleaning up old secrets (will succeed only if they are no longer in use)..."
+            # Sleep to allow services to start using new secrets before attempting cleanup
+            sleep 30
+            docker secret rm db_user db_password db_name || echo "Some old secrets are still in use or already removed. Continuing..."
