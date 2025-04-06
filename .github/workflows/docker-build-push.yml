@@ -1,57 +1,111 @@
-name: Build and Push Docker Images
+name: Build and Deploy Suyay App
 
-on: push
+on:
+  push:
+    branches:
+      - main # Ejecutar solo cuando se haga push a la rama main
 
 env:
-  # GitHub Container Registry
-  REGISTRY: ghcr.io
-  # Repository name as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository_owner }}/suyay
+  REGISTRY: ghcr.io # Registro de contenedores (GitHub Container Registry)
+  IMAGE_NAME_WEB: ${{ github.repository_owner }}/suyay_web # Nombre de la imagen web
 
 jobs:
+  # ----- JOB 1: Construir y Publicar la Imagen Docker -----
   build-and-push:
     runs-on: ubuntu-latest
-    # Set permissions to allow pushing to GitHub Container Registry
     permissions:
-      contents: read
-      packages: write
+      contents: read # Permiso para leer el repo
+      packages: write # Permiso para escribir en GitHub Packages (Container Registry)
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # Descarga el código del repo
 
-      # Set up Docker Buildx for multi-platform builds if needed
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v3 # Configura Buildx para construir imágenes
 
-      # Login to GitHub Container Registry
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ github.actor }} # Usuario que inició el workflow
+          password: ${{ secrets.GITHUB_TOKEN }} # Token temporal proporcionado por Actions
 
-      # Extract metadata for Docker images
-      - name: Extract metadata for web image
-        id: meta-web
+      - name: Extract metadata (tags, labels) for Web image
+        id: meta-web # Identificador para referenciar los outputs
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}_web
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_WEB }}
           tags: |
-            type=ref,event=branch
-            type=sha,format=short
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,format=short # Tag con el hash corto del commit (ej: fea4dab)
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }} # Tag 'latest' solo para la rama main
 
-      # Build and push the web image
-      - name: Build and push web image
+      # Construye la imagen SIN incluir secretos y la sube al registro
+      - name: Build and push Web image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          push: true
-          tags: ${{ steps.meta-web.outputs.tags }}
-          labels: ${{ steps.meta-web.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          context: . # Directorio raíz del repo como contexto
+          file: ./Dockerfile # Especifica el Dockerfile a usar
+          push: true # Indica que se debe subir la imagen al registro
+          tags: ${{ steps.meta-web.outputs.tags }} # Usa los tags generados en el paso 'meta-web'
+          labels: ${{ steps.meta-web.outputs.labels }} # Usa las labels generadas
+          cache-from: type=gha # Usa caché de builds anteriores en GitHub Actions
+          cache-to: type=gha,mode=max # Guarda caché para futuras builds
 
-      # The workflow doesn't build a custom DB image since you're using the official MySQL image
+  # ----- JOB 2: Desplegar en el Servidor de Producción -----
+  deploy:
+    needs: build-and-push # Este job depende de que 'build-and-push' termine exitosamente
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Descarga el código de nuevo (necesario para tener docker-stack.yml)
+
+      - name: Deploy to production server via SSH
+        uses: appleboy/ssh-action@v1.0.3 # Acción para ejecutar comandos remotos vía SSH
+        with:
+          host: ${{ secrets.VPS_HOST }} # Host del VPS desde GitHub Secrets (pjcdz.ddns.net)
+          username: ${{ secrets.VPS_USER }} # Usuario 'deploy' desde GitHub Secrets
+          key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }} # Clave SSH privada desde GitHub Secrets
+          script: |
+            # --- Bloque para Actualizar Docker Secrets ---
+            echo "🔄 Updating Docker Secrets on Swarm Manager..."
+
+            # Actualizar db_user
+            echo "   - Updating db_user..."
+            if docker secret inspect db_user >/dev/null 2>&1; then
+              docker secret rm db_user
+              echo "     Removed existing db_user secret."
+            fi
+            echo "${{ secrets.DB_USER }}" | docker secret create db_user -
+            echo "     Created new db_user secret."
+
+            # Actualizar db_password
+            echo "   - Updating db_password..."
+            if docker secret inspect db_password >/dev/null 2>&1; then
+              docker secret rm db_password
+              echo "     Removed existing db_password secret."
+            fi
+            echo "${{ secrets.DB_PASSWORD }}" | docker secret create db_password -
+            echo "     Created new db_password secret."
+
+            # Actualizar db_name
+            echo "   - Updating db_name..."
+            if docker secret inspect db_name >/dev/null 2>&1; then
+              docker secret rm db_name
+              echo "     Removed existing db_name secret."
+            fi
+            echo "${{ secrets.DB_NAME }}" | docker secret create db_name -
+            echo "     Created new db_name secret."
+
+            echo "✅ Docker Secrets updated successfully."
+
+            # --- Bloque para Desplegar el Stack ---
+            echo "🚀 Deploying Docker Stack..."
+            # Asegúrate que el usuario 'deploy' tenga este directorio y el archivo yml
+            # Podrías añadir un 'git pull' o 'scp' aquí si el yml cambia frecuentemente
+            # OJO: Ajusta la ruta si es diferente en tu servidor
+            # USA EL ARCHIVO docker-stack.yml (que ahora usa secretos)
+            docker stack deploy --with-registry-auth -c /home/deploy/suyay/docker-stack.yml suyay
+
+            echo "🎉 Stack deployment command executed."

@@ -1,35 +1,37 @@
 <?php
-
-// Primero intenta obtener la conexión desde DB_URL (como está configurado actualmente)
-$database_url = getenv('DB_URL');
-
-if ($database_url) {
-    // Parsear la URL de la base de datos
-    $url_parts = parse_url($database_url);
-    
-    // Obtener los componentes de la URL
-    $hostname = $url_parts['host'];
-    $database = substr($url_parts['path'], 1);
-    $username = $url_parts['user'];
-    $password = $url_parts['pass'];
-    $port = $url_parts['port']; // Obtener el puerto de la URL
-    
-    // Crear la conexión a la base de datos con el puerto
-    $mysqli = mysqli_connect($hostname, $username, $password, $database, $port);
-} else {
-    // Alternativa: usar variables de entorno individuales (útil en Coolify)
-    $hostname = getenv('DB_HOST') ?: 'db';
-    $port = getenv('DB_PORT') ?: '3309';
-    $database = getenv('DB_NAME') ?: 'suyay_db';
-    $username = getenv('DB_USER') ?: 'root';
-    $password = getenv('DB_PASSWORD') ?: 'suyay_password';
-    
-    // Crear la conexión a la base de datos con las variables individuales
-    $mysqli = mysqli_connect($hostname, $username, $password, $database, $port);
+// Función para leer Docker secrets desde archivos
+function getSecret($name) {
+    $secretFile = "/run/secrets/$name";
+    // Verifica si el archivo existe y es legible
+    if (file_exists($secretFile) && is_readable($secretFile)) {
+        // Lee el contenido, quita espacios en blanco al inicio/final
+        return trim(file_get_contents($secretFile));
+    }
+    // Retorna null si el secreto no se encuentra
+    return null;
 }
 
-// Verificar si la conexión fue exitosa
-if (!$mysqli) {
-    die("Error al conectar a la base de datos: " . mysqli_connect_error());
+// Intenta leer desde Docker secrets primero, luego usa variables de entorno, y finalmente valores por defecto
+$db_host = getenv('DB_HOST') ?: 'db'; // Generalmente el nombre del servicio Docker
+$db_port = getenv('DB_PORT') ?: '3306'; // Puerto por defecto de MySQL
+$db_user = getSecret('db_user') ?: getenv('DB_USER') ?: 'root'; // Lee secreto 'db_user', fallback a env 'DB_USER', default 'root'
+$db_password = getSecret('db_password') ?: getenv('DB_PASSWORD') ?: ''; // Lee secreto 'db_password', fallback a env 'DB_PASSWORD', default vacío
+$db_name = getSecret('db_name') ?: getenv('DB_NAME') ?: 'suyay_db'; // Lee secreto 'db_name', fallback a env 'DB_NAME', default 'suyay_db'
+
+// Crear conexión
+$conn = new mysqli($db_host, $db_user, $db_password, $db_name, $db_port);
+
+// Verificar conexión
+if ($conn->connect_error) {
+    // Es mejor loguear el error que mostrarlo directamente en producción
+    error_log("Connection failed: " . $conn->connect_error);
+    // Mostrar un mensaje genérico al usuario
+    die("Error al conectar con la base de datos.");
 }
+
+// Establecer juego de caracteres
+if (!$conn->set_charset("utf8")) {
+    error_log("Error loading character set utf8: " . $conn->error);
+}
+
 ?>
