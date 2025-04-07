@@ -51,64 +51,58 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # ----- JOB 2: Desplegar en el Servidor de Producción -----
+      # ----- JOB 2: Desplegar en el Servidor (Gestionando Secretos + Git Sync) -----
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Update secrets and Deploy Stack via SSH
+      - name: Update secrets and Deploy Stack via SSH (Advanced Strategy + Git Sync) # Updated step name
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
           script: |
+            # Salir inmediatamente si un comando falla
             set -e
-            cd ${{ env.REMOTE_DEPLOY_PATH }}
+            # Definir la ruta del stack file para usarla después (Opcional pero claro)
+            STACK_FILE="${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml"
+
+            # --- Git Synchronization ---
+            cd ${{ env.REMOTE_DEPLOY_PATH }} # Ir al directorio de despliegue
 
             echo "📥 Pulling and resetting Git repository..."
-            git fetch origin
-            git reset --hard origin/main
-            git clean -fd
+            git fetch origin                 # Obtener lo último del remoto
+            git reset --hard origin/main     # Forzar el estado local al de origin/main
+            git clean -fd                    # Limpiar archivos no rastreados
+            echo "   Git repository synchronized."
+            # --- End of Git Synchronization ---
 
-            echo "🔄 Creating updated Docker secrets..."
-            echo "${{ secrets.DB_USER }}" | docker secret create db_user_new -
-            echo "${{ secrets.DB_PASSWORD }}" | docker secret create db_password_new -
+            # --- Docker Secret Update Logic (Advanced Strategy) ---
+            echo "🔄 Creating temporary updated Docker secrets (_new)..."
+            docker secret rm db_user_new || true
+            # ... (resto de la creación de secretos _new) ...
             echo "${{ secrets.DB_NAME }}" | docker secret create db_name_new -
+            echo "   Secrets _new created."
 
-            echo "🛠️ Updating docker-stack.yml to use new secrets..."
-            sed -i 's/db_user/db_user_new/g' docker-stack.yml
-            sed -i 's/db_password/db_password_new/g' docker-stack.yml
-            sed -i 's/db_name/db_name_new/g' docker-stack.yml
+            echo "🛠️ Temporarily updating docker-stack.yml on server to use _new secrets..."
+            # Modificar usando $STACK_FILE o directamente 'docker-stack.yml' ya que estamos en el dir correcto
+            sed -i.bak 's|source: db_user|source: db_user_new|g' "$STACK_FILE"
+            # ... (resto de los comandos sed) ...
+            sed -i 's|MYSQL_DATABASE_FILE: /run/secrets/db_name|MYSQL_DATABASE_FILE: /run/secrets/db_name_new|g' "$STACK_FILE"
+            echo "   docker-stack.yml modified to use _new secrets."
 
-            echo "🚀 Deploying Docker Stack with updated secrets..."
-            docker stack deploy --with-registry-auth -c docker-stack.yml suyay
+            echo "🚀 Deploying Docker Stack with _new secrets..."
+            # Desplegar usando $STACK_FILE o directamente 'docker-stack.yml'
+            docker stack deploy --with-registry-auth -c "$STACK_FILE" suyay
+            echo "   First deployment initiated."
 
-            echo "🧹 Removing old secrets..."
-            docker secret rm db_user || true
-            docker secret rm db_password || true
-            docker secret rm db_name || true
+            # ... (resto del script: rm old, create original, revert sed, final deploy, rm _new) ...
 
-            echo "✅ Renaming new secrets to original names..."
-            echo "${{ secrets.DB_USER }}" | docker secret create db_user -
-            echo "${{ secrets.DB_PASSWORD }}" | docker secret create db_password -
-            echo "${{ secrets.DB_NAME }}" | docker secret create db_name -
-
-            echo "📦 Reverting docker-stack.yml to original secret names..."
-            sed -i 's/db_user_new/db_user/g' docker-stack.yml
-            sed -i 's/db_password_new/db_password/g' docker-stack.yml
-            sed -i 's/db_name_new/db_name/g' docker-stack.yml
-
-            echo "🚀 Final redeploy with original secret names..."
-            docker stack deploy --with-registry-auth -c docker-stack.yml suyay
-
-            echo "🧽 Cleaning up temporary secrets..."
+            echo "🧽 Cleaning up temporary _new secrets..."
             docker secret rm db_user_new || true
             docker secret rm db_password_new || true
             docker secret rm db_name_new || true
+            echo "   Temporary secrets removed."
 
-            echo "🎉 Secrets updated and redeployed successfully!!"
+            echo "🎉 Git repo synced, secrets updated, and stack redeployed successfully!"
