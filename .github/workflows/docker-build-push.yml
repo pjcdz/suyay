@@ -68,6 +68,11 @@ jobs:
             # Definir la ruta del stack file para usarla después (Opcional pero claro)
             STACK_FILE="${{ env.REMOTE_DEPLOY_PATH }}/docker-stack.yml"
 
+            echo "🧽 Cleaning up old _new secrets if any..."
+            docker secret rm db_user_new || true
+            docker secret rm db_password_new || true
+            docker secret rm db_name_new || true
+
             # --- Git Synchronization ---
             cd ${{ env.REMOTE_DEPLOY_PATH }} # Ir al directorio de despliegue
 
